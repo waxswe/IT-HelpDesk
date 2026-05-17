@@ -1,0 +1,135 @@
+﻿<Page x:Class="IT_HelpDesk.Pages.Administrator.AdministratorPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:IT_HelpDesk.Pages.Administrator"
+      xmlns:controls="clr-namespace:IT_HelpDesk.Controls"
+      xmlns:classes="clr-namespace:IT_HelpDesk.Data.Classes"
+      xmlns:conv="clr-namespace:IT_HelpDesk.Localization"
+      mc:Ignorable="d" 
+      d:DesignHeight="720" d:DesignWidth="1280"
+      Title="Окно администратора">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="65"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Фоновый прямоугольник -->
+        <Grid Width="950" Height="450" Grid.Column="1">
+            <Border Width="950" Height="450" CornerRadius="25" Background="#30A6C9" BorderBrush="#000000" BorderThickness="1"/>
+            <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[System_Users]}" Margin="0,0,0,350" FontSize="24"/>
+            
+            <!-- Поле поиска -->
+            <Grid Width="800" Height="25" Margin="0,0,0,270">
+                <Border Background="White" CornerRadius="12" BorderThickness="1" BorderBrush="#000000"/>
+                <TextBox x:Name="TBSearch" Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Margin="0,0,80,0" VerticalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Auto" Width="600" Height="25">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <TextBlock Text="🔍" FontSize="14" Margin="15,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" MouseLeftButtonUp="Search_MouseLeftButtonUp" Cursor="Hand"/>
+                <Image x:Name="FilterImg" Source="/Data/Images/filter.png" Width="20" Height="16" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Right" MouseLeftButtonUp="FilterImg_MouseLeftButtonUp" Cursor="Hand"/>
+                <Popup x:Name="FilterMenu" PlacementTarget="{Binding ElementName=FilterImg}" Placement="Bottom" StaysOpen="False">
+                        <Border Background="White" BorderBrush="Gray" BorderThickness="1" Padding="10">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Role_Section]}" FontWeight="Bold"/>
+                                <MenuItem x:Name="FilterRoleAdmin" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Role_Admin]}" Click="FilterOption_Click"/>
+                                <MenuItem x:Name="FilterRoleUser" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Role_User]}" Click="FilterOption_Click"/>
+                                <MenuItem x:Name="FilterRoleManager" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Role_Manager]}" Click="FilterOption_Click"/>
+                                <MenuItem x:Name="FilterRoleExecutor" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Role_Executor]}" Click="FilterOption_Click"/>
+                                <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Section]}" FontWeight="Bold" Margin="0,10,0,0"/>
+                                <MenuItem x:Name="FilterStatusActive" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Active]}" Click="FilterOption_Click"/>
+                                <MenuItem x:Name="FilterStatusBlocked" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Blocked]}" Click="FilterOption_Click"/>
+                                <MenuItem x:Name="FilterStatusDeleted" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Deleted]}" Click="FilterOption_Click"/>
+                                <Separator Margin="0,5"/>
+                                <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Reset_Button]}" Click="ResetFilters_Click" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+            </Grid>
+
+            <!-- Список пользователей внутри прямоугольника -->
+            <Border Background="Transparent" Padding="0,0,0,5" Margin="30,120,0,0">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Header_FullName]}" FontWeight="Bold" Foreground="Black"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Header_Login]}" FontWeight="Bold" Foreground="Black" Grid.Column="1"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Header_Password]}" FontWeight="Bold" Foreground="Black" Grid.Column="2"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Header_Email]}" FontWeight="Bold" Foreground="Black" Grid.Column="3"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Header_Role]}" FontWeight="Bold" Foreground="Black" Grid.Column="4"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Header_Status]}" FontWeight="Bold" Foreground="Black" Grid.Column="5"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Header_Actions]}" FontWeight="Bold" Foreground="Black" Grid.Column="6"/>
+                </Grid>
+            </Border>
+
+            <!-- Список пользователей -->
+            <ScrollViewer Margin="30,150,30,30" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="UsersItemsControl" ItemsSource="{Binding UsersList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#FFFFFF" BorderThickness="0,0,0,1" Padding="0,5,0,5" Margin="0,0,0,5" MouseLeftButtonUp="UsersItemsControl_MouseLeftButtonUp" Cursor="Hand">
+                                <Grid HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding name, Converter={StaticResource UserNameConverter}}" Foreground="White" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding login}" Foreground="White" Grid.Column="1"/>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Width="110">
+                                        <TextBlock x:Name="PasswordTextBlock" Text="********" VerticalAlignment="Center" Foreground="White" Width="80" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="EyeIcon" Text="👁" FontSize="14" Cursor="Hand" Margin="0,0,15,5" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Password_Tooltip]}" 
+                                                   Width="20" TextAlignment="Center" MouseEnter="EyeIcon_MouseEnter" MouseLeave="EyeIcon_MouseLeave"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding email, TargetNullValue='-', FallbackValue='-'}" Foreground="White" Grid.Column="3"/>
+                                    <TextBlock Text="{Binding ., Converter={StaticResource UserRoleOrProfessionConverter}}" Foreground="White" Grid.Column="4"/>
+                                    <TextBlock Text="{Binding statusID, Converter={StaticResource StatusNameConverter}}" Foreground="White" Grid.Column="5"/>
+
+                                    <StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Button Width="30" Height="30" Margin="2,0" Click="EditUserButton_Click" Background="White" BorderThickness="0" FontFamily="Segoe UI Emoji" 
+                                                FontSize="16" Content="✏️" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Edit_User_Tooltip]}"/>
+                                        <Button Width="30" Height="30" Margin="2,0" Click="DeleteUserButton_Click" Background="#FF6666" BorderThickness="0" FontFamily="Segoe UI Emoji" 
+                                                FontSize="16" Content="🗑️" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Delete_User_Tooltip]}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            
+            <!-- Переход по страницам -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,30">
+                <Button x:Name="PrevPageButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Prev_Button]}" Width="30" Height="30" Margin="5" Click="PrevPage_Click" IsEnabled="False"/>
+                <TextBlock x:Name="PageInfo" Text="Страница 1/1" VerticalAlignment="Center" Margin="10,0" Foreground="White"/>
+                <Button x:Name="NextPageButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Next_Button]}" Width="30" Height="30" Margin="5" Click="NextPage_Click" IsEnabled="False"/>
+                <TextBox x:Name="TBPageNumber" Width="40" Height="25" Margin="10,0,5,0" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="TBPageNumber_KeyDown" Background="White" Foreground="Black" Text="1" PreviewTextInput="TBPageNumber_PreviewTextInput"/>
+                <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[GoTo_Button]}" Width="60" Height="25" Margin="0,0,5,0" Click="GoToPageButton_Click"/>
+            </StackPanel>
+        </Grid>
+        <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[Add_User]}" Margin="5" Width="150" Click="AddUserButton_Click"/>
+            <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[Mass_Mailing]}" Margin="5" Width="150" Click="MassMailingButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>

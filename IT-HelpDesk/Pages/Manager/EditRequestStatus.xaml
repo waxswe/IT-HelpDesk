@@ -1,0 +1,88 @@
+﻿<Page x:Class="IT_HelpDesk.Pages.Manager.EditRequestStatus"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:IT_HelpDesk.Pages.Manager"
+      mc:Ignorable="d" 
+      d:DesignHeight="720" d:DesignWidth="1280"
+      Title="Изменить статус заявки">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="65"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Фоновый прямоугольник -->
+        <Grid Width="950" Height="450" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="75"/>
+                <RowDefinition Height="75"/>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Width="950" Height="450" CornerRadius="25" Background="#30A6C9" BorderBrush="#000000" BorderThickness="1" Grid.RowSpan="10" Grid.ColumnSpan="10"/>
+            <Label x:Name="AddEditCaseLabel" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Edit_Request]}" Margin="0,10,0,0" FontSize="24" VerticalAlignment="Top" Grid.ColumnSpan="10"/>
+
+            <StackPanel HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Choose_Case_Section_Manager]}" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}" Foreground="Black"/>
+                </StackPanel>
+                <ComboBox x:Name="CBSection" DisplayMemberPath="LocalizedName" SelectedValuePath="SectionID" Width="225" Height="30" IsReadOnly="True" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Left" Grid.Row="2" Grid.Column="2">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Choose_Case_Category_Manager]}" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}" Foreground="Black"/>
+                </StackPanel>
+                <ComboBox x:Name="CBCategory" SelectedValue="{Binding requestCategoryID}" SelectedValuePath="CategoryID" DisplayMemberPath="LocalizedName" Height="30" Width="225" IsReadOnly="True" 
+						  ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Left" Grid.Row="2" Grid.Column="3">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Choose_Case_Status]}" HorizontalAlignment="Left"/>
+					<TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[RequiredField_Tooltip]}"/>
+                </StackPanel>
+                <ComboBox x:Name="CBStatus" SelectedValuePath="requestStatusID" DisplayMemberPath="LocalizedName" Height="30" Width="225"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Left" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Enter_Title_Manager]}" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}" Foreground="Black"/>
+                </StackPanel>
+                <TextBox x:Name="TBTitle" Text="{Binding title}" Width="725" Height="30" VerticalScrollBarVisibility="Auto" IsReadOnly="True" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Left" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3">
+				<StackPanel Orientation="Horizontal">
+					<Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Enter_Description_Manager]}" HorizontalAlignment="Left"/>
+				    <TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}" Foreground="Black"/>
+			    </StackPanel>
+                <TextBox x:Name="TBDescriprion" Text="{Binding description}" Width="725" Height="100" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" IsReadOnly="True"
+						 ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[ReadOnly_Fields_Note]}" Padding="2"/>
+            </StackPanel>
+
+            <Button x:Name="SendCaseButton" Click="SendCaseButton_Click" Grid.Row="5" Grid.ColumnSpan="10" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Save_Button]}"/>
+        </Grid>
+		<StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<Button x:Name="CommentsButton" Click="CommentsButton_Click" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Go_Comments_Button]}" Margin="15"/>
+			<Button x:Name="CancelButton" Click="CancelButton_Click" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Cancel_Button]}"/>
+		</StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,21 @@
+﻿<Application x:Class="IT_HelpDesk.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:IT_HelpDesk"
+             xmlns:helpers="clr-namespace:IT_HelpDesk.Data.Classes"
+             xmlns:conv="clr-namespace:IT_HelpDesk.Localization"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Data/Dictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <helpers:LocalizationManager x:Key="LocalizationManager"/>
+            <conv:RoleNameConverter x:Key="RoleNameConverter"/>
+            <conv:StatusNameConverter x:Key="StatusNameConverter"/>
+            <conv:UserNameConverter x:Key="UserNameConverter"/>
+            <conv:UserRoleOrProfessionConverter x:Key="UserRoleOrProfessionConverter"/>
+            <conv:ReadToFontWeightConverter x:Key="ReadToFontWeightConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

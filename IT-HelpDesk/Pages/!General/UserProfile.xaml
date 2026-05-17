@@ -1,0 +1,108 @@
+﻿<Window x:Class="IT_HelpDesk.Pages._General.UserProfile"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" 
+        Title="Профиль пользователя" Height="500" Width="600" 
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="550"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="1" Grid.Column="1" Background="White" CornerRadius="20" Padding="25,20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Аватар -->
+                <Ellipse x:Name="AvatarEllipse" Grid.Row="0" Grid.Column="0" Width="80" Height="80" Margin="0,0,20,0" Cursor="Hand" MouseDown="ChangeAvatar_Click" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Edit_Avatar]}">
+                    <Ellipse.Fill>
+                        <ImageBrush x:Name="AvatarBrush" ImageSource="/Data/Images/avatar.jpg" Stretch="UniformToFill"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+
+                <!-- ФИО -->
+                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="TBFullName" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+
+                <!-- Кнопка редактирования профиля -->
+                <Button x:Name="EditProfileButton" Grid.Row="0" Grid.Column="2" Width="36" Height="36" Background="#30A6C9" BorderThickness="0" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Edit_Tooltip]}" 
+                        Click="EditProfile_Click" Visibility="Collapsed">
+                    <TextBlock Text="✏️" FontSize="18" Foreground="White"/>
+                </Button>
+
+                <!-- Кнопка удаления аватара -->
+                <Button x:Name="DeleteAvatarButton" Grid.Row="1" Grid.Column="0" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Delete_Avatar]}" Background="Transparent" 
+                        BorderThickness="0" Foreground="Red" Cursor="Hand" Click="DeleteAvatar_Click" Visibility="Collapsed" Margin="0,5,0,10" HorizontalAlignment="Left"/>
+
+                <!-- Роль -->
+                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Role_Label_Profile]}" FontSize="14" Foreground="#555555"/>
+                    <TextBlock x:Name="RoleText" FontSize="14" Foreground="#555555" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <!-- Почта -->
+                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="0,5,0,0" x:Name="ViewEmailPanel">
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Email_Label_Profile]}" FontSize="14" Foreground="#555555"/>
+                    <TextBlock x:Name="EmailText" Text="{Binding email, FallbackValue='не указан'}" FontSize="14" Foreground="#555555" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <!-- Телефон -->
+                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="0,5,0,0" x:Name="ViewPhonePanel">
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Phone_Label]}" FontSize="14" Foreground="#555555"/>
+                    <TextBlock x:Name="PhoneText" Text="{Binding phone, FallbackValue='-'}" FontSize="14" Foreground="#555555" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <!-- панель редактирования -->
+                <StackPanel Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" Margin="0,5,0,0" x:Name="EditPanel" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Email_Label_Profile]}" FontSize="14" Foreground="#555555" VerticalAlignment="Center"/>
+                        <TextBox x:Name="EditEmailBox" Width="150" Margin="5,0,5,0" Height="28" VerticalContentAlignment="Center" HorizontalAlignment="Right" Text="{Binding email, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Phone_Label]}" FontSize="14" Foreground="#555555" VerticalAlignment="Center"/>
+                        <TextBox x:Name="EditPhoneBox" Width="150" Margin="5,0,5,0" Height="28" VerticalContentAlignment="Center" HorizontalAlignment="Right" Text="{Binding phone, UpdateSourceTrigger=PropertyChanged, FallbackValue='-'}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[Save_Button]}" Width="70" Click="SaveProfile_Click" Margin="0,0,5,0"/>
+                        <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[Cancel_Button]}" Width="70" Click="CancelEdit_Click"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Статистика -->
+                <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,20,0,0" Padding="12" CornerRadius="12" 
+                        Background="#F8F9FA" BorderBrush="#DDDDDD" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Statistics_Title]}" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="StatInfo" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Statistics_Placeholder]}" FontSize="13"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Кнопка выхода -->
+                <Button Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Logout_Button]}" Width="125" Height="30" Margin="0,20,0,0" x:Name="LogoutButton"
+                        HorizontalAlignment="Center" Background="#FF6666" Foreground="White" BorderThickness="0" Click="LogoutButton_Click" Visibility="Collapsed"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
