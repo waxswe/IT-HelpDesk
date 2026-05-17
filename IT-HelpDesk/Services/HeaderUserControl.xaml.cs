@@ -109,7 +109,7 @@ namespace IT_HelpDesk.Controls
             {
                 canView = (request.clientID == currentUser.userID);
             }
-            else if (currentUser.roleID == 4)
+            else if (currentUser.roleID == 4 && request.requestStatusID <= 4)
             {
                 canView = (request.workerID == currentUser.userID);
             }
