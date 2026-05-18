@@ -127,6 +127,13 @@ namespace IT_HelpDesk.Pages._General
             if (string.IsNullOrWhiteSpace(newPhone))
                 newPhone = "-";
 
+            if (!IsValidPhone(newPhone))
+            {
+                MessageBox.Show(GetLoc("Error_InvalidPhone"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
+                EditPhoneBox.Focus();
+                return;
+            }
+
             User user = ConnectObject.GetConnect().Users.Find(_displayUser.userID);
             if (user != null)
             {
@@ -318,6 +325,17 @@ namespace IT_HelpDesk.Pages._General
                 ExitEditMode();
             else
                 EditProfileButton.Visibility = Visibility.Collapsed;
+        }
+
+        private bool IsValidPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone) || phone == "-") return true;
+            string cleaned = phone.Trim();
+            bool hasPlus = cleaned.StartsWith("+");
+            string digitsOnly = cleaned.Replace("+", "").Trim();
+            if (digitsOnly.Any(c => !char.IsDigit(c))) return false;
+            int length = digitsOnly.Length;
+            return length >= 10 && length <= 15;
         }
 
         private string GetLoc(string key)

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using IT_HelpDesk.Data;
+using OfficeOpenXml;
 
 namespace IT_HelpDesk
 {
@@ -17,8 +18,9 @@ namespace IT_HelpDesk
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            ExcelPackage.License.SetNonCommercialPersonal("Роман");
             base.OnStartup(e);
-            string savedLang = Data.Settings.Default.Language;
+            string savedLang = Settings.Default.Language;
             if (!string.IsNullOrEmpty(savedLang))
             {
                 LocalizationManager loc = new LocalizationManager();

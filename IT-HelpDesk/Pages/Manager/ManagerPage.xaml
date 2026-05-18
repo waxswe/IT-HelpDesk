@@ -38,18 +38,28 @@
                     <Border Background="White" BorderBrush="Gray" BorderThickness="1" Padding="10" Width="auto">
                         <StackPanel>
                             <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Section_Manager]}" FontWeight="Bold"/>
-                            <MenuItem x:Name="FilterStatusNew" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_New]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterStatusAssigned" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Assigned]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterStatusWork" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Work]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterStatusWaiting" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Waiting]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterStatusCompleted" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Completed]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterStatusCancelled" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Cancelled]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterStatusClosed" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Closed]}" Click="FilterOption_Click"/>
+                            <MenuItem x:Name="FilterStatusNew" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_New]}" Click="FilterOption_Click" 
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterStatusAssigned" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Assigned]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterStatusWork" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Work]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterStatusWaiting" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Waiting]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterStatusCompleted" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Completed]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterStatusCancelled" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Cancelled]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterStatusClosed" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Closed]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
 
                             <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Section_Section_Manager]}" FontWeight="Bold" Margin="0,10,0,0"/>
-                            <MenuItem x:Name="FilterSectionFacility" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Section_Facility]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterSectionIT" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Section_IT]}" Click="FilterOption_Click"/>
-                            <MenuItem x:Name="FilterSectionOther" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Section_Other]}" Click="FilterOption_Click"/>
+                            <MenuItem x:Name="FilterSectionFacility" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Section_Facility]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterSectionIT" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Section_IT]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                            <MenuItem x:Name="FilterSectionOther" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Section_Other]}" Click="FilterOption_Click"
+                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
 
                             <Separator Margin="0,5"/>
                             <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Reset_Manager]}" Click="ResetFilters_Click" Margin="0,5,0,0"/>
@@ -58,6 +68,7 @@
                 </Popup>
             </Grid>
 
+            <!--Данные по заявкам-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,90,0,0" VerticalAlignment="Top">
                 <TextBlock x:Name="TotalCountText" Foreground="White" Margin="0,0,15,0"/>
                 <TextBlock x:Name="NewCountText" Foreground="White" Margin="0,0,15,0"/>
@@ -68,9 +79,16 @@
                 <TextBlock x:Name="ClosedCountText" Foreground="White"/>
             </StackPanel>
 
+            <!-- RadioButton для выбора режима -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,120,0,10" VerticalAlignment="Top">
+                <RadioButton x:Name="RadioOnlyNew" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Only_New_Button]}" GroupName="ViewMode" Margin="15,0" VerticalAlignment="Center" IsChecked="True" Checked="RadioMode_Checked"/>
+                <RadioButton x:Name="RadioAssigned" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Assigned_Button]}" GroupName="ViewMode" Margin="15,0" VerticalAlignment="Center" Checked="RadioMode_Checked"/>
+                <RadioButton x:Name="RadioAll" Content="{Binding Source={StaticResource LocalizationManager}, Path=[All_Requests_Button]}" GroupName="ViewMode" Margin="15,0" VerticalAlignment="Center" Checked="RadioMode_Checked"/>
+            </StackPanel>
+
             <TextBlock x:Name="NoRequestsTextBlock" Text="{Binding Source={StaticResource LocalizationManager}, Path=[NoRequests_Placeholder]}" FontSize="16" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
 
-            <ScrollViewer Margin="30,130,30,50" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Margin="30,150,30,50" VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="RequestsItemsControl">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -140,9 +158,7 @@
             </StackPanel>
         </Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
-            <Button x:Name="OnlyNewButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Only_New_Button]}" Margin="0,0,0,10" Click="OnlyNewButton_Click" Width="150" Height="30"/>
-            <Button x:Name="AssignedButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Assigned_Button]}" Margin="0,0,0,10" Click="AssignedButton_Click" Width="150" Height="30"/>
-            <Button x:Name="AllRequestsButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[All_Requests_Button]}" Click="AllRequestsButton_Click" Width="150" Height="30"/>
+            <Button x:Name="ExecutorStatsButton" Click="ExecutorStatsButton_Click" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Title]}"/>
         </StackPanel>
     </Grid>
 </Page>

@@ -11,9 +11,9 @@ namespace IT_HelpDesk.Data.Classes
         public static void AddSystemComment(int requestId, string eventType, params object[] args)
         {
             string parameters = args != null && args.Length > 0 ? args[0]?.ToString() : "";
-            if (string.IsNullOrEmpty(parameters)) parameters = " "; 
+            if (string.IsNullOrEmpty(parameters)) parameters = " ";
 
-            var comment = new Comment
+            Comment comment = new Comment
             {
                 requestID = requestId,
                 userID = null,          

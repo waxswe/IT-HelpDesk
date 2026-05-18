@@ -9,111 +9,91 @@ namespace IT_HelpDesk.Data.Classes
     {
         public static void Create(int userId, string templateKey, int? requestId = null, int? initiatorId = null, params object[] formatArgs)
         {
-            using (var context = new ITHelpDeskEntities())
+            NotificationTemplate template = ConnectObject.GetConnect().NotificationTemplates.FirstOrDefault(t => t.templateKey == templateKey);
+            if (template == null) return;
+
+            LocalizationManager loc = App.Current.Resources["LocalizationManager"] as LocalizationManager;
+            string templateText = loc?[templateKey] ?? template.template;
+
+            List<object> args = new List<object>();
+            if (requestId.HasValue) args.Add(requestId.Value);
+            if (formatArgs != null) args.AddRange(formatArgs);
+
+            string message = args.Count > 0 ? string.Format(templateText, args.ToArray()) : templateText;
+
+            Notification notification = new Notification
             {
-                NotificationTemplate template = context.NotificationTemplates.FirstOrDefault(t => t.templateKey == templateKey);
-                if (template == null) return;
+                userID = userId,
+                notificationStatusID = 1,
+                templateID = template.templateID,
+                initiatorID = initiatorId,
+                requestID = requestId,
+                createdAt = DateTime.Now,
+                isRead = false,
+                message = message
+            };
+            ConnectObject.GetConnect().Notifications.Add(notification);
+            ConnectObject.GetConnect().SaveChanges();
 
-                LocalizationManager loc = App.Current.Resources["LocalizationManager"] as LocalizationManager;
-                string templateText = loc?[templateKey] ?? template.template;
-
-                var args = new List<object>();
-                if (requestId.HasValue) args.Add(requestId.Value);
-                if (formatArgs != null) args.AddRange(formatArgs);
-
-                string message = args.Count > 0 ? string.Format(templateText, args.ToArray()) : templateText;
-
-                var notification = new Notification
-                {
-                    userID = userId,
-                    notificationStatusID = 1,
-                    templateID = template.templateID,
-                    initiatorID = initiatorId,
-                    requestID = requestId,
-                    createdAt = DateTime.Now,
-                    isRead = false,
-                    message = message
-                };
-                context.Notifications.Add(notification);
-                context.SaveChanges();
-            }
         }
 
         public static int GetUnreadCount(int userId)
         {
-            using (var context = new ITHelpDeskEntities())
-            {
-                return context.Notifications.Count(n => n.userID == userId && !n.isRead);
-            }
+            return ConnectObject.GetConnect().Notifications.Count(n => n.userID == userId && !n.isRead);
         }
 
         public static List<NotificationItem> GetNotificationsPage(int userId, int skip, int take)
         {
-            using (var context = new ITHelpDeskEntities())
-            {
-                return context.Notifications
-                    .Where(n => n.userID == userId)
-                    .OrderByDescending(n => n.createdAt)
-                    .Skip(skip).Take(take)
-                    .Select(n => new NotificationItem
-                    {
-                        NotificationID = n.notificationID,
-                        Message = n.message,
-                        CreatedAt = n.createdAt.Value,
-                        IsRead = n.isRead,
-                        RequestID = n.requestID,
-                        InitiatorID = n.initiatorID,
-                        TemplateKey = n.NotificationTemplate.templateKey
-                    })
-                    .ToList();
-            }
+            return ConnectObject.GetConnect().Notifications.Where(n => n.userID == userId).OrderByDescending(n => n.createdAt).Skip(skip).Take(take)
+                .Select(n => new NotificationItem
+                {
+                    NotificationID = n.notificationID,
+                    Message = n.message,
+                    CreatedAt = n.createdAt.Value,
+                    IsRead = n.isRead,
+                    RequestID = n.requestID,
+                    InitiatorID = n.initiatorID,
+                    TemplateKey = n.NotificationTemplate.templateKey
+                })
+                .ToList();
+
         }
 
         public static void MarkAsRead(int notificationId)
         {
-            using (var context = new ITHelpDeskEntities())
+            Notification n = ConnectObject.GetConnect().Notifications.Find(notificationId);
+            if (n != null && !n.isRead)
             {
-                var n = context.Notifications.Find(notificationId);
-                if (n != null && !n.isRead)
-                {
-                    n.isRead = true;
-                    n.notificationStatusID = 2;
-                    context.SaveChanges();
-                }
+                n.isRead = true;
+                n.notificationStatusID = 2;
+                ConnectObject.GetConnect().SaveChanges();
             }
+
         }
 
         public static void MarkAllAsRead(int userId)
         {
-            using (var context = new ITHelpDeskEntities())
+            IQueryable<Notification> notifications = ConnectObject.GetConnect().Notifications.Where(n => n.userID == userId && !n.isRead);
+            foreach (Notification n in notifications)
             {
-                var notifications = context.Notifications.Where(n => n.userID == userId && !n.isRead);
-                foreach (var n in notifications)
-                {
-                    n.isRead = true;
-                    n.notificationStatusID = 2;
-                }
-                context.SaveChanges();
+                n.isRead = true;
+                n.notificationStatusID = 2;
             }
+            ConnectObject.GetConnect().SaveChanges();
+
         }
 
         public static int GetTotalCount(int userId)
         {
-            using (var context = new ITHelpDeskEntities())
-            {
-                return context.Notifications.Count(n => n.userID == userId);
-            }
+            return ConnectObject.GetConnect().Notifications.Count(n => n.userID == userId);
         }
 
         public static void NotifyAllAdmins(string templateKey, int? requestId = null, int? initiatorId = null, params object[] formatArgs)
         {
-            using (var context = new ITHelpDeskEntities())
+            List<User> admins = ConnectObject.GetConnect().Users.Where(u => u.roleID == 1 && u.statusID == 1).ToList();
+            foreach (User admin in admins)
             {
-                var admins = context.Users.Where(u => u.roleID == 1 && u.statusID == 1).ToList();
-                foreach (var admin in admins)
-                {
-                    Create(admin.userID, templateKey, requestId, initiatorId, formatArgs);
-                }
+                Create(admin.userID, templateKey, requestId, initiatorId, formatArgs);
             }
         }
     }

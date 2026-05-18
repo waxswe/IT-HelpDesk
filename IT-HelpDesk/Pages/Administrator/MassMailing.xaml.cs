@@ -72,12 +72,10 @@ namespace IT_HelpDesk.Pages.Administrator
 
                 if (sendComments)
                 {
-                    var requests = ConnectObject.GetConnect().Requests
-                        .Where(r => r.requestStatusID >= 1 && r.requestStatusID <= 4)
-                        .ToList();
-                    foreach (var req in requests)
+                    List<Request> requests = ConnectObject.GetConnect().Requests.Where(r => r.requestStatusID >= 1 && r.requestStatusID <= 4).ToList();
+                    foreach (Request req in requests)
                     {
-                        var comment = new Comment
+                        Comment comment = new Comment
                         {
                             requestID = req.requestID,
                             userID = null,

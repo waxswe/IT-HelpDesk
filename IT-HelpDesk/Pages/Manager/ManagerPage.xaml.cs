@@ -39,7 +39,6 @@ namespace IT_HelpDesk.Pages.Manager
             Loaded += (s, e) =>
             {
                 LoadRequests();
-                UpdateButtonsHighlight();
             };
             LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
             if (loc != null) loc.LanguageChanged += (sender, args) => LoadRequests();
@@ -204,54 +203,17 @@ namespace IT_HelpDesk.Pages.Manager
             TBSearch.Focus();
         }
 
-        private void OnlyNewButton_Click(object sender, RoutedEventArgs e)
+        private void RadioMode_Checked(object sender, RoutedEventArgs e)
         {
-            _currentMode = ViewMode.OnlyNew;
+            if (RadioOnlyNew.IsChecked == true)
+                _currentMode = ViewMode.OnlyNew;
+            else if (RadioAssigned.IsChecked == true)
+                _currentMode = ViewMode.Assigned;
+            else
+                _currentMode = ViewMode.All;
+
             ResetFilters_Click(null, null);
             LoadRequests();
-            UpdateButtonsHighlight();
-        }
-
-        private void AssignedButton_Click(object sender, RoutedEventArgs e)
-        {
-            _currentMode = ViewMode.Assigned;
-            ResetFilters_Click(null, null);
-            LoadRequests();
-            UpdateButtonsHighlight();
-        }
-
-        private void AllRequestsButton_Click(object sender, RoutedEventArgs e)
-        {
-            _currentMode = ViewMode.All;
-            ResetFilters_Click(null, null);
-            LoadRequests();
-            UpdateButtonsHighlight();
-        }
-
-        private void UpdateButtonsHighlight()
-        {
-            OnlyNewButton.Background = null;
-            OnlyNewButton.FontWeight = FontWeights.Normal;
-            AssignedButton.Background = null;
-            AssignedButton.FontWeight = FontWeights.Normal;
-            AllRequestsButton.Background = null;
-            AllRequestsButton.FontWeight = FontWeights.Normal;
-
-            if (_currentMode == ViewMode.OnlyNew)
-            {
-                OnlyNewButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9cddfb"));
-                OnlyNewButton.FontWeight = FontWeights.Bold;
-            }
-            else if (_currentMode == ViewMode.Assigned)
-            {
-                AssignedButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9cddfb"));
-                AssignedButton.FontWeight = FontWeights.Bold;
-            }
-            else if (_currentMode == ViewMode.All)
-            {
-                AllRequestsButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9cddfb"));
-                AllRequestsButton.FontWeight = FontWeights.Bold;
-            }
         }
 
         private string GetLastResponseDate(Request requestItem)
@@ -264,6 +226,16 @@ namespace IT_HelpDesk.Pages.Manager
 
         private void UpdatePage()
         {
+            if (RequestsItemsControl == null)
+            {
+                RequestsItemsControl = this.FindName("RequestsItemsControl") as ItemsControl;
+            }
+            if (NoRequestsTextBlock == null)
+                NoRequestsTextBlock = this.FindName("NoRequestsTextBlock") as TextBlock;
+            if (PaginationPanel == null)
+                PaginationPanel = this.FindName("PaginationPanel") as StackPanel;
+            if (RequestsItemsControl == null || NoRequestsTextBlock == null || PaginationPanel == null) return;
+
             List<dynamic> source = _filteredRequests ?? _allRequests ?? new List<dynamic>();
             bool hasRequests = source.Count > 0;
 
@@ -284,6 +256,7 @@ namespace IT_HelpDesk.Pages.Manager
             // Заполняем ComboBox
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                if (RequestsItemsControl == null) return;
                 for (int i = 0; i < paged.Count; i++)
                 {
                     dynamic item = paged[i];
@@ -424,6 +397,7 @@ namespace IT_HelpDesk.Pages.Manager
         private void UpdateGlobalCounters()
         {
             if (_allRequests == null) return;
+            if (TotalCountText == null) return;
             List<dynamic> activeRequests = _allRequests.Where(r => r.RequestStatusID != 6).ToList();
             int total = activeRequests.Count;
             int newCount = activeRequests.Count(r => r.RequestStatusID == 1);
@@ -452,7 +426,7 @@ namespace IT_HelpDesk.Pages.Manager
 
         private void NextPage_Click(object sender, RoutedEventArgs e)
         {
-            int totalPages = (int)Math.Ceiling(_allRequests.Count / (double)PageSize);
+            int totalPages = (int)Math.Ceiling((_filteredRequests?.Count ?? _allRequests?.Count ?? 0) / (double)PageSize);
             if (_currentPage >= totalPages) return;
             _currentPage++;
             UpdatePage();
@@ -533,7 +507,6 @@ namespace IT_HelpDesk.Pages.Manager
             if (_currentMode != ViewMode.All)
             {
                 _currentMode = ViewMode.All;
-                UpdateButtonsHighlight();
             }
         }
 
@@ -557,6 +530,11 @@ namespace IT_HelpDesk.Pages.Manager
                 child = VisualTreeHelper.GetParent(child);
             }
             return null;
+        }
+
+        private void ExecutorStatsButton_Click(object sender, RoutedEventArgs e)
+        {
+            FrameObject.frameMain.Navigate(new ExecutorStatistics());
         }
     }
 }

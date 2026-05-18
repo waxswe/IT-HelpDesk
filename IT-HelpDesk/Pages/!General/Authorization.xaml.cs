@@ -31,7 +31,7 @@ namespace IT_HelpDesk.Pages._General
 
             Loaded += LoginWindow_Loaded;
 
-            //AuthService.setPassword("1", "1"); // Дать пользователь "1" пароль "1". Первое число - логин, второе - пароль. Не забудьте удалить или закомментировать этот код, если его использовали
+            //AuthService.setPassword("1", "1"); // Дать пользователю "1" пароль "1". Первое число - логин, второе - пароль. Не забудьте удалить или закомментировать этот код, если его использовали
         }
 
         private void LoginWindow_Loaded(object sender, RoutedEventArgs e)
@@ -108,7 +108,7 @@ namespace IT_HelpDesk.Pages._General
                     Settings.Default.RememberMe = false;
                     Settings.Default.SavedLogin = "";
                     Settings.Default.SavedPasswordHash = "";
-                    Settings.Default.LastLogin = "";
+                    Settings.Default.LastLogin = TBLogin.Text;
                     Settings.Default.Save();
                 }
 
