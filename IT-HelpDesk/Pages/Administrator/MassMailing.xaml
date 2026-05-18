@@ -38,7 +38,8 @@
 
             <StackPanel Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3">
                 <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[MassMailing_MessageLabel]}" HorizontalAlignment="Left"/>
-                <TextBox x:Name="TBMassMail" HorizontalAlignment="Left" Width="825" Height="125" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                <TextBox x:Name="TBMassMail" Width="825" Height="125" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" 
+                         VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="3"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2">

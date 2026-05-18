@@ -113,7 +113,7 @@ CREATE TABLE Notifications (
     initiatorID INT NULL FOREIGN KEY REFERENCES Users(userID),
     requestID INT NULL  FOREIGN KEY REFERENCES Requests(requestID),
     createdAt DATETIME DEFAULT GETDATE(),
-	message NVARCHAR(MAX) NOT NULL DEFAULT '',
+	message NVARCHAR(MAX) DEFAULT '',
 	isRead BIT NOT NULL DEFAULT 0
 );
 
@@ -195,6 +195,7 @@ INSERT INTO NotificationTemplates (templateKey, template) VALUES
 	('Notification_UserBlocked_ToAdmin', 'Пользователь {0} был заблокирован из-за превышения числа попыток входа'),
 	('Notification_StatusChanged', 'Статус заявки #{0} был изменён на '''{1}'''.'),
 	('Notification_ExecutorRemoved', 'Ваше назначение в заявке #{0} отменено'),
+	('Notification_NeedManager_ToManager', 'В заявке #{0} требуется вмешательство менеджера'),
 	('MassMailing_Notification', 'Массовая рассылка: {0}'),
 	('Success_Request_Created', 'Заявка #{0} успешно создана!'),
 	('Success_Request_Cancelled', 'Заявка #{0} успешно отменена!'),

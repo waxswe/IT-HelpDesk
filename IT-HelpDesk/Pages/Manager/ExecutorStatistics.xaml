@@ -96,15 +96,22 @@
                 <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[GoTo_Button]}" Width="60" Height="25" Margin="0,0,5,0" Click="GoToPageButton_Click"/>
             </StackPanel>
 
-            <!-- Заглушка, если нет данных -->
+            <!-- если нет данных -->
             <TextBlock x:Name="NoDataTextBlock" Text="{Binding Source={StaticResource LocalizationManager}, Path=[NoData]}" 
                        FontSize="16" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
         </Grid>
 
-        <!-- Кнопки справа -->
+        <!-- Кнопки -->
         <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="ExportButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_ExportButton]}" Margin="10" Click="ExportButton_Click"/>
-            <Button x:Name="BackButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Back_Button_Com]}" Click="BackButton_Click"/>
+            <Button x:Name="ExportButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_ExportButton]}" Margin="10" Click="ExportButton_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Excel]}" Click="ExportExcel_Click"/>
+                        <MenuItem Header="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Csv]}" Click="ExportCsv_Click"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button x:Name="BackButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Back_Button]}" Click="BackButton_Click"/>
         </StackPanel>
     </Grid>
 </Page>

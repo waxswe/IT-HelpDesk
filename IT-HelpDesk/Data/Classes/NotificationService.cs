@@ -44,7 +44,7 @@ namespace IT_HelpDesk.Data.Classes
 
         public static List<NotificationItem> GetNotificationsPage(int userId, int skip, int take)
         {
-            return ConnectObject.GetConnect().Notifications.Where(n => n.userID == userId).OrderByDescending(n => n.createdAt).Skip(skip).Take(take)
+            List<NotificationItem> notifications = ConnectObject.GetConnect().Notifications.Where(n => n.userID == userId).OrderByDescending(n => n.createdAt).Skip(skip).Take(take)
                 .Select(n => new NotificationItem
                 {
                     NotificationID = n.notificationID,
@@ -57,6 +57,28 @@ namespace IT_HelpDesk.Data.Classes
                 })
                 .ToList();
 
+            LocalizationManager loc = App.Current.Resources["LocalizationManager"] as LocalizationManager;
+            if (loc != null)
+            {
+                foreach (NotificationItem item in notifications)
+                {
+                    if (item.TemplateKey == "Notification_UserBlocked_ToAdmin")
+                    {
+                        string login = "пользователь";
+                        if (item.InitiatorID.HasValue)
+                        {
+                            User user = ConnectObject.GetConnect().Users.Find(item.InitiatorID.Value);
+                            if (user != null)
+                                login = user.login;
+
+                        }
+                        string template = loc["Notification_UserBlocked_ToAdmin"] ?? "Пользователь {0} был заблокирован...";
+                        item.Message = string.Format(template, login);
+                    }
+                }
+            }
+
+            return notifications;
         }
 
         public static void MarkAsRead(int notificationId)

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:IT_HelpDesk"
         xmlns:controls="clr-namespace:IT_HelpDesk.Controls"
         mc:Ignorable="d"
-        Title="IT-HelpDesk" Height="720" Width="1280" WindowStartupLocation="CenterScreen">
+        Title="IT-HelpDesk" Height="720" Width="1280" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="120*"/>

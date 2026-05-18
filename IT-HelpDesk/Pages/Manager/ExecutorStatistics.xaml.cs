@@ -190,7 +190,17 @@ namespace IT_HelpDesk.Pages.Manager
             e.Handled = !e.Text.All(char.IsDigit);
         }
 
-        private async void ExportButton_Click(object sender, RoutedEventArgs e)
+        private void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            ExportButton.ContextMenu.IsOpen = true;
+        }
+
+        private void ExportExcel_Click(object sender, RoutedEventArgs e)
+        {
+            ExportToExcel();
+        }
+
+        private async void ExportToExcel()
         {
             try
             {
@@ -231,10 +241,11 @@ namespace IT_HelpDesk.Pages.Manager
                             worksheet.Cells[1, 1].Value = GetLoc("ExecutorStatistics_Column_FullName");
                             worksheet.Cells[1, 2].Value = GetLoc("ExecutorStatistics_Column_Profession");
                             worksheet.Cells[1, 3].Value = GetLoc("ExecutorStatistics_Column_Total");
-                            worksheet.Cells[1, 4].Value = GetLoc("ExecutorStatistics_Column_InProgress");
-                            worksheet.Cells[1, 5].Value = GetLoc("ExecutorStatistics_Column_Completed");
-                            worksheet.Cells[1, 6].Value = GetLoc("ExecutorStatistics_Column_CompletionPercent");
-                            worksheet.Cells[1, 7].Value = GetLoc("ExecutorStatistics_Column_LoadPercent");
+                            worksheet.Cells[1, 4].Value = GetLoc("ExecutorStatistics_Column_Assigned");
+                            worksheet.Cells[1, 5].Value = GetLoc("ExecutorStatistics_Column_InProgress");
+                            worksheet.Cells[1, 6].Value = GetLoc("ExecutorStatistics_Column_Completed");
+                            worksheet.Cells[1, 7].Value = GetLoc("ExecutorStatistics_Column_CompletionPercent");
+                            worksheet.Cells[1, 8].Value = GetLoc("ExecutorStatistics_Column_LoadPercent");
 
                             for (int i = 0; i < data.Count; i++)
                             {
@@ -242,10 +253,11 @@ namespace IT_HelpDesk.Pages.Manager
                                 worksheet.Cells[i + 2, 1].Value = row.FullName;
                                 worksheet.Cells[i + 2, 2].Value = row.Profession;
                                 worksheet.Cells[i + 2, 3].Value = row.TotalRequests;
-                                worksheet.Cells[i + 2, 4].Value = row.InProgressRequests;
-                                worksheet.Cells[i + 2, 5].Value = row.CompletedRequests;
-                                worksheet.Cells[i + 2, 6].Value = row.CompletionPercent;
-                                worksheet.Cells[i + 2, 7].Value = row.LoadPercent;
+                                worksheet.Cells[i + 2, 4].Value = row.AssignedRequests; 
+                                worksheet.Cells[i + 2, 5].Value = row.InProgressRequests;
+                                worksheet.Cells[i + 2, 6].Value = row.CompletedRequests;
+                                worksheet.Cells[i + 2, 7].Value = row.CompletionPercent;
+                                worksheet.Cells[i + 2, 8].Value = row.LoadPercent;
                             }
                             worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
                         }
@@ -267,6 +279,97 @@ namespace IT_HelpDesk.Pages.Manager
                         await package.SaveAsAsync(fi);
                         MessageBox.Show(GetLoc("ExecutorStatistics_ExportSuccess"), GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format(GetLoc("ExecutorStatistics_ExportError"), ex.Message), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExportCsv_Click(object sender, RoutedEventArgs e)
+        {
+            ExportToCsv();
+        }
+
+        private void ExportToCsv()
+        {
+            try
+            {
+                Period[] periods = new[] { Period.Month, Period.Quarter, Period.All };
+                Dictionary<Period, List<ExecutorStat>> dataSets = new Dictionary<Period, List<ExecutorStat>>();
+                Period originalPeriod = _currentPeriod;
+
+                foreach (Period period in periods)
+                {
+                    _currentPeriod = period;
+                    LoadStatistics();
+                    dataSets[period] = _allStats.ToList();
+                }
+
+                _currentPeriod = originalPeriod;
+                LoadStatistics();
+
+                SaveFileDialog saveDialog = new SaveFileDialog
+                {
+                    Filter = "CSV files (*.csv)|*.csv",
+                    DefaultExt = "csv",
+                    FileName = $"Статистика_Исполнителей_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+                };
+
+                if (saveDialog.ShowDialog() == true)
+                {
+                    using (StreamWriter writer = new StreamWriter(saveDialog.FileName, false, Encoding.UTF8))
+                    {
+                        foreach (Period period in periods)
+                        {
+                            string title;
+                            switch (period)
+                            {
+                                case Period.Month:
+                                    title = GetLoc("ExecutorStatistics_Period_Month");
+                                    break;
+                                case Period.Quarter:
+                                    title = GetLoc("ExecutorStatistics_Period_Quarter");
+                                    break;
+                                default:
+                                    title = GetLoc("ExecutorStatistics_Period_All");
+                                    break;
+                            }
+                            writer.WriteLine($"--- {title} ---");
+
+                            // Заголовки
+                            string[] headers = {
+                                GetLoc("ExecutorStatistics_Column_FullName"),
+                                GetLoc("ExecutorStatistics_Column_Profession"),
+                                GetLoc("ExecutorStatistics_Column_Total"),
+                                GetLoc("ExecutorStatistics_Column_Assigned"),
+                                GetLoc("ExecutorStatistics_Column_InProgress"),
+                                GetLoc("ExecutorStatistics_Column_Completed"),
+                                GetLoc("ExecutorStatistics_Column_CompletionPercent"),
+                                GetLoc("ExecutorStatistics_Column_LoadPercent")
+                            };
+                            writer.WriteLine(string.Join(";", headers));
+
+                            // Данные
+                            foreach (var stat in dataSets[period])
+                            {
+                                string[] row = {
+                                    stat.FullName,
+                                    stat.Profession,
+                                    stat.TotalRequests.ToString(),
+                                    stat.AssignedRequests.ToString(),
+                                    stat.InProgressRequests.ToString(),
+                                    stat.CompletedRequests.ToString(),
+                                    stat.CompletionPercent,
+                                    stat.LoadPercent
+                                };
+                                writer.WriteLine(string.Join(";", row));
+                            }
+                            writer.WriteLine();
+                        }
+                    }
+                    MessageBox.Show(GetLoc("ExecutorStatistics_ExportSuccess"), GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)

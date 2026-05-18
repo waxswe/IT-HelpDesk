@@ -351,7 +351,7 @@ namespace IT_HelpDesk.Pages.Manager
                 LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
                 if (loc?.CurrentLanguage == "en")
                     workerDisplay = loc.Transliterate(selectedWorker.name);
-                CommentHelper.AddSystemComment(request.requestID, "Assigned", selectedWorker.name);
+                CommentHelper.AddSystemComment(request.requestID, "Assigned", $"userId={selectedWorker.userID}");
 
                 LoadRequests();
             }

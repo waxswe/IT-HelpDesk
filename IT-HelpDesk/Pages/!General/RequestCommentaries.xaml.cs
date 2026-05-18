@@ -38,8 +38,12 @@ namespace IT_HelpDesk.Pages._General
             if (_loc != null)
                 _loc.LanguageChanged += (s, e) => RefreshUI();
             Loaded += async (s, e) => await LoadCommentsAsync();
-            TitleTextBlock.Text = string.Format(_loc?["Comments_Title"] ?? "Comments for request \"{0}\"", _currentRequest.title);
+            UpdateTitle();
 
+            if (AuthService.CurrentUser?.roleID == 4) 
+                CallManagerButton.Visibility = Visibility.Visible;
+            else
+                CallManagerButton.Visibility = Visibility.Collapsed;
         }
 
         private async Task LoadCommentsAsync()
@@ -82,10 +86,27 @@ namespace IT_HelpDesk.Pages._General
                         string templateKey = $"System_Comment_{eventType}";
                         string template = _loc?[templateKey] ?? templateKey;
                         string parameters = comment.text;
-                        if (string.IsNullOrEmpty(parameters))
-                            displayText = template;
-                        else
-                            displayText = string.Format(template, parameters);
+                        string displayParam = parameters;
+
+                        if (!string.IsNullOrEmpty(parameters))
+                        {
+                            if (eventType == "StatusChanged" && parameters.StartsWith("statusId="))
+                            {
+                                int statusId = int.Parse(parameters.Substring(9));
+                                displayParam = GetCaseStatusTranslation(statusId);
+                            }
+                            else if (eventType == "Assigned" && parameters.StartsWith("userId="))
+                            {
+                                int userId = int.Parse(parameters.Substring(7));
+                                User user = ConnectObject.GetConnect().Users.Find(userId);
+                                if (user != null)
+                                {
+                                    displayParam = (_loc?.CurrentLanguage == "en" && _loc != null) ? _loc.Transliterate(user.name) : user.name;
+                                }
+                            }
+                        }
+
+                        displayText = string.IsNullOrEmpty(displayParam) ? template : string.Format(template, displayParam);
                     }
                     else
                     {
@@ -148,11 +169,22 @@ namespace IT_HelpDesk.Pages._General
             CommentsScrollViewer.ScrollToBottom();
         }
 
+        private string GetCaseStatusTranslation(int statusId)
+        {
+            LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
+            return loc?.GetCaseStatusTranslation(statusId) ?? statusId.ToString();
+        }
+
         private void RefreshUI()
         {
-            TitleTextBlock.Text = string.Format(_loc?["Comments_Title"] ?? "Comments for request \"{0}\"", _currentRequest.title);
+            UpdateTitle();
             RefreshCommentsList();
             UpdateInputAvailability();
+        }
+
+        private void UpdateTitle()
+        {
+            TitleTextBlock.Text = string.Format(_loc?["Comments_Title"] ?? "Comments for request \"{0}\"", _currentRequest.title);
         }
 
         private async void SendButton_Click(object sender, RoutedEventArgs e)
@@ -200,6 +232,7 @@ namespace IT_HelpDesk.Pages._General
                 };
                 ConnectObject.GetConnect().Comments.Add(newComment);
                 await ConnectObject.GetConnect().SaveChangesAsync();
+
                 CommentTextBox.Text = "";
 
                 User currentUser = AuthService.CurrentUser;
@@ -231,7 +264,7 @@ namespace IT_HelpDesk.Pages._General
                     {
                         NotificationService.Create(request.clientID, "Notification_Comment_ToClient", requestId: request.requestID, initiatorId: currentUser.userID, formatArgs: request.requestID);
                     }
-                    // Уведомление исполнителю (если есть и не текущий)
+                    // Уведомление исполнителю
                     if (request.workerID.HasValue && request.workerID.Value != currentUser.userID)
                     {
                         NotificationService.Create(request.workerID.Value, "Notification_Comment_ToExecutor", requestId: request.requestID, initiatorId: currentUser.userID, formatArgs: request.requestID);
@@ -251,6 +284,19 @@ namespace IT_HelpDesk.Pages._General
                 CommentTextBox.ToolTip = "Комментирование недоступно для завершённых заявок";
             else
                 CommentTextBox.ToolTip = _loc?["Comment_Input_Placeholder"] ?? "Введите комментарий...";
+        }
+
+        private void CallManagerButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<User> managers = ConnectObject.GetConnect().Users.Where(u => u.roleID == 3 && u.statusID == 1).ToList();
+
+            foreach (User manager in managers)
+            {
+                NotificationService.Create(manager.userID, "Notification_NeedManager_ToManager", requestId: _currentRequest.requestID, initiatorId: AuthService.CurrentUser.userID, formatArgs: _currentRequest.requestID);
+            }
+
+            // Показываем подтверждение пользователю
+            MessageBox.Show(GetLoc("CallManager_Sent") ?? "Запрос отправлен менеджеру", GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private async void EditComment_Click(object sender, RoutedEventArgs e)

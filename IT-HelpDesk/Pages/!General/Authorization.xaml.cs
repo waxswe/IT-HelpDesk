@@ -85,7 +85,7 @@ namespace IT_HelpDesk.Pages._General
                 user.statusID = 2;
                 user.mistakeCount = 0;
                 ConnectObject.GetConnect().SaveChanges();
-                NotificationService.NotifyAllAdmins("Notification_UserBlocked_ToAdmin", null, user.userID, user.name);
+                NotificationService.NotifyAllAdmins("Notification_UserBlocked_ToAdmin", null, user.userID);
                 return;
             }
 

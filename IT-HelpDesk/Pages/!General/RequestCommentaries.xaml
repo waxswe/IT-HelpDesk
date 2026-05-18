@@ -11,7 +11,7 @@
       KeyDown="Page_KeyDown">
 
     <Page.Resources>
-        <!-- Шаблон для чужих комментариев (аватар слева) -->
+        <!-- Шаблон для чужих комментариев -->
         <DataTemplate x:Key="OtherCommentTemplate">
             <Border Margin="0,0,0,12" Padding="10" Background="{Binding BackgroundColor}" 
                     CornerRadius="10" BorderBrush="#000000" BorderThickness="1"
@@ -42,7 +42,7 @@
             </Border>
         </DataTemplate>
 
-        <!-- Шаблон для своих комментариев (аватар справа, кнопки внизу) -->
+        <!-- Шаблон для своих комментариев -->
         <DataTemplate x:Key="OwnCommentTemplate">
             <Border Margin="0,0,0,12" Padding="10" Background="{Binding BackgroundColor}" 
                     CornerRadius="10" BorderBrush="#000000" BorderThickness="1"
@@ -112,10 +112,11 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="TitleTextBlock" Grid.Column="1" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Comments_Title], StringFormat='{}{0}'}"/>
-                <Button Grid.Column="2" Width="32" Height="32" Background="Transparent" BorderThickness="0" Click="CloseButton_Click" ToolTip="Закрыть">
-                    <TextBlock Text="❌" FontSize="16"/>
-                </Button>
+                <TextBlock x:Name="TitleTextBlock" Grid.ColumnSpan="3" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Comments_Title], StringFormat='{}{0}'}"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="3" HorizontalAlignment="Right">
+                    <Button x:Name="CallManagerButton" Grid.Column="2" Content="{Binding Source={StaticResource LocalizationManager}, Path=[CallManager_Button]}" Width="140" Height="32" Margin="0,0,10,0" Click="CallManagerButton_Click" Visibility="Collapsed"/>
+                    <Button Grid.Column="3" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Exit_Button_Text]}" Width="70" Height="32" Click="CloseButton_Click" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Exit_Button_Tooltip]}"/>
+                </StackPanel>
             </Grid>
 
             <!-- Список комментариев -->

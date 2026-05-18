@@ -186,7 +186,7 @@ namespace IT_HelpDesk.Pages.Manager
                         NotificationService.Create(savedRequest.workerID.Value, "Notification_StatusChanged", savedRequest.requestID, AuthService.CurrentUser.userID, newStatusName);
                     }
 
-                    CommentHelper.AddSystemComment(_currentRequest.requestID, "StatusChanged", newStatusName);
+                    CommentHelper.AddSystemComment(_currentRequest.requestID, "StatusChanged", $"statusId={newStatusId}");
                     System.Diagnostics.Debug.WriteLine($"newStatusId={newStatusId}, workerID={savedRequest.workerID}, currentUser={AuthService.CurrentUser.userID}");
                     if (newStatusId == 1 && oldWorkerId.HasValue && oldWorkerId.Value != AuthService.CurrentUser.userID)
                     {
