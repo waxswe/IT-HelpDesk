@@ -155,6 +155,9 @@
     <Compile Include="Data\Status.cs">
       <DependentUpon>HelpDeskDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\sysdiagram.cs">
+      <DependentUpon>HelpDeskDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\User.cs">
       <DependentUpon>HelpDeskDB.tt</DependentUpon>
     </Compile>
@@ -175,6 +178,9 @@
     </Compile>
     <Compile Include="Pages\Administrator\AdministratorPage.xaml.cs">
       <DependentUpon>AdministratorPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Administrator\MassMailing.xaml.cs">
+      <DependentUpon>MassMailing.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Client\AddEditCase.xaml.cs">
       <DependentUpon>AddEditCase.xaml</DependentUpon>
@@ -230,6 +236,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Administrator\AdministratorPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Administrator\MassMailing.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

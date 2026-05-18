@@ -270,14 +270,20 @@ namespace IT_HelpDesk.Pages._General
 
         private void DeleteAvatar_Click(object sender, RoutedEventArgs e)
         {
+            AvatarBrush.ImageSource = null;
+
             string fileName = _displayUser.avatarURL;
-            if (!string.IsNullOrEmpty(fileName) && fileName != "/Data/Images/avatar.jpg" && !fileName.Contains("avatar.jpg"))
-            {
-                string fullPath = System.IO.Path.Combine(GetAvatarDirectory(), fileName);
-                if (File.Exists(fullPath))
-                    File.Delete(fullPath);
-            }
             string defaultPath = "/Data/Images/avatar.jpg";
+            string fullPath = null;
+
+            if (!string.IsNullOrEmpty(fileName) && fileName != defaultPath && !fileName.Contains("avatar.jpg"))
+            {
+                fullPath = System.IO.Path.Combine(GetAvatarDirectory(), fileName);
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+            }
 
             User user = ConnectObject.GetConnect().Users.Find(_displayUser.userID);
             if (user != null)
@@ -286,6 +292,12 @@ namespace IT_HelpDesk.Pages._General
                 ConnectObject.GetConnect().SaveChanges();
             }
 
+            _displayUser.avatarURL = defaultPath;
+            if (_isOwnProfile)
+                AuthService.CurrentUser.avatarURL = defaultPath;
+
+            ReloadAvatar();
+
             if (!_isOwnProfile && AuthService.CurrentUser.roleID == 1)
             {
                 string adminName = AuthService.CurrentUser.name;
@@ -293,20 +305,19 @@ namespace IT_HelpDesk.Pages._General
                 if (loc?.CurrentLanguage == "en")
                     adminName = loc.Transliterate(adminName);
 
-                NotificationService.Create(userId: _displayUser.userID, templateKey: "Notification_AvatarDeleted_ToUser", requestId: null, initiatorId: AuthService.CurrentUser.userID);
+                NotificationService.Create(_displayUser.userID, "Notification_AvatarDeleted_ToUser",
+                    initiatorId: AuthService.CurrentUser.userID,
+                    formatArgs: adminName);
             }
 
-            _displayUser.avatarURL = defaultPath;
-            if (_isOwnProfile)
-                AuthService.CurrentUser.avatarURL = defaultPath;
-
-            ReloadAvatar();
+            bool isDefaultAvatar = true;
+            bool canDeleteAvatar = (_isOwnProfile && !isDefaultAvatar) || (!_isOwnProfile && AuthService.CurrentUser.roleID == 1 && !isDefaultAvatar);
+            DeleteAvatarButton.Visibility = canDeleteAvatar ? Visibility.Visible : Visibility.Collapsed;
 
             if (_isOwnProfile)
-            {
-                (Application.Current.MainWindow as MainWindow)?.HeaderUserControl?.RefreshAvatar();
                 ExitEditMode();
-            }
+            else
+                EditProfileButton.Visibility = Visibility.Collapsed;
         }
 
         private string GetLoc(string key)

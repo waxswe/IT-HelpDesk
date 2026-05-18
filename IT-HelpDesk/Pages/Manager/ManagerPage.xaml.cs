@@ -370,10 +370,10 @@ namespace IT_HelpDesk.Pages.Manager
                 req.updatedBy = AuthService.CurrentUser.userID;
                 await ConnectObject.GetConnect().SaveChangesAsync();
 
-                NotificationService.Create(selectedWorkerId, "Notification_Assigned_ToExecutor", request.requestID, AuthService.CurrentUser.userID);
+                NotificationService.Create(selectedWorkerId, "Notification_Assigned_ToExecutor", requestId: request.requestID, initiatorId: AuthService.CurrentUser.userID, formatArgs: request.requestID);
                 User client = ConnectObject.GetConnect().Users.Find(request.clientID);
                 if (client != null)
-                    NotificationService.Create(client.userID, "Notification_Assigned_ToClient", request.requestID, selectedWorker.userID);
+                    NotificationService.Create(client.userID, "Notification_Assigned_ToClient", request.requestID, selectedWorker.userID, selectedWorker.name);
 
                 LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
                 if (loc?.CurrentLanguage == "en")

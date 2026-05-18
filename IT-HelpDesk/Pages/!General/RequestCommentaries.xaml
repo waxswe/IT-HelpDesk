@@ -112,7 +112,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="TitleTextBlock" Grid.Column="1" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Comments_Title_Com], StringFormat='{}{0}'}"/>
+                <TextBlock x:Name="TitleTextBlock" Grid.Column="1" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Comments_Title], StringFormat='{}{0}'}"/>
                 <Button Grid.Column="2" Width="32" Height="32" Background="Transparent" BorderThickness="0" Click="CloseButton_Click" ToolTip="Закрыть">
                     <TextBlock Text="❌" FontSize="16"/>
                 </Button>

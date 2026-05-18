@@ -38,6 +38,7 @@
           <Property Name="requestID" Type="int" />
           <Property Name="createdAt" Type="datetime" />
           <Property Name="isRead" Type="bit" Nullable="false" />
+          <Property Name="message" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="NotificationStatuses">
           <Key>
@@ -111,6 +112,16 @@
           </Key>
           <Property Name="statusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="status" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -347,6 +358,7 @@
           <EntitySet Name="RequestStatuses" EntityType="Self.RequestStatuses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Statuses" EntityType="Self.Statuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Comments__eventI__619B8048" Association="Self.FK__Comments__eventI__619B8048">
             <End Role="CommentEvents" EntitySet="CommentEvents" />
@@ -424,7 +436,6 @@
         <EntityContainer Name="ITHelpDeskEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="CommentEvents" EntityType="ITHelpDeskModel.CommentEvent" />
           <EntitySet Name="Comments" EntityType="ITHelpDeskModel.Comment" />
-          <EntitySet Name="Notifications" EntityType="ITHelpDeskModel.Notification" />
           <EntitySet Name="NotificationStatuses" EntityType="ITHelpDeskModel.NotificationStatus" />
           <EntitySet Name="Professions" EntityType="ITHelpDeskModel.Profession" />
           <EntitySet Name="RequestCategories" EntityType="ITHelpDeskModel.RequestCategory" />
@@ -445,22 +456,6 @@
           <AssociationSet Name="FK__Comments__userID__5FB337D6" Association="ITHelpDeskModel.FK__Comments__userID__5FB337D6">
             <End Role="User" EntitySet="Users" />
             <End Role="Comment" EntitySet="Comments" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Notificat__initi__6D0D32F4" Association="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Notificat__notif__6B24EA82" Association="ITHelpDeskModel.FK__Notificat__notif__6B24EA82">
-            <End Role="NotificationStatus" EntitySet="NotificationStatuses" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Notificat__reque__6E01572D" Association="ITHelpDeskModel.FK__Notificat__reque__6E01572D">
-            <End Role="Request" EntitySet="Requests" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Notificat__userI__6A30C649" Association="ITHelpDeskModel.FK__Notificat__userI__6A30C649">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Notification" EntitySet="Notifications" />
           </AssociationSet>
           <AssociationSet Name="FK__Users__professio__440B1D61" Association="ITHelpDeskModel.FK__Users__professio__440B1D61">
             <End Role="Profession" EntitySet="Professions" />
@@ -498,9 +493,27 @@
             <End Role="Status" EntitySet="Statuses" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="Notifications" EntityType="ITHelpDeskModel.Notification" />
           <EntitySet Name="NotificationTemplates" EntityType="ITHelpDeskModel.NotificationTemplate" />
+          <EntitySet Name="sysdiagrams" EntityType="ITHelpDeskModel.sysdiagram" />
+          <AssociationSet Name="FK__Notificat__initi__6D0D32F4" Association="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificat__notif__6B24EA82" Association="ITHelpDeskModel.FK__Notificat__notif__6B24EA82">
+            <End Role="NotificationStatus" EntitySet="NotificationStatuses" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificat__reque__6E01572D" Association="ITHelpDeskModel.FK__Notificat__reque__6E01572D">
+            <End Role="Request" EntitySet="Requests" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
           <AssociationSet Name="FK__Notificat__templ__6C190EBB" Association="ITHelpDeskModel.FK__Notificat__templ__6C190EBB">
             <End Role="NotificationTemplate" EntitySet="NotificationTemplates" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificat__userI__6A30C649" Association="ITHelpDeskModel.FK__Notificat__userI__6A30C649">
+            <End Role="User" EntitySet="Users" />
             <End Role="Notification" EntitySet="Notifications" />
           </AssociationSet>
         </EntityContainer>
@@ -528,24 +541,6 @@
           <NavigationProperty Name="CommentEvent" Relationship="ITHelpDeskModel.FK__Comments__eventI__619B8048" FromRole="Comment" ToRole="CommentEvent" />
           <NavigationProperty Name="Request" Relationship="ITHelpDeskModel.FK__Comments__reques__5EBF139D" FromRole="Comment" ToRole="Request" />
           <NavigationProperty Name="User" Relationship="ITHelpDeskModel.FK__Comments__userID__5FB337D6" FromRole="Comment" ToRole="User" />
-        </EntityType>
-        <EntityType Name="Notification">
-          <Key>
-            <PropertyRef Name="notificationID" />
-          </Key>
-          <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="userID" Type="Int32" Nullable="false" />
-          <Property Name="notificationStatusID" Type="Int32" Nullable="false" />
-          <Property Name="templateID" Type="Int32" Nullable="false" />
-          <Property Name="initiatorID" Type="Int32" />
-          <Property Name="requestID" Type="Int32" />
-          <Property Name="createdAt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="User" Relationship="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4" FromRole="Notification" ToRole="User" />
-          <NavigationProperty Name="NotificationStatus" Relationship="ITHelpDeskModel.FK__Notificat__notif__6B24EA82" FromRole="Notification" ToRole="NotificationStatus" />
-          <NavigationProperty Name="Request" Relationship="ITHelpDeskModel.FK__Notificat__reque__6E01572D" FromRole="Notification" ToRole="Request" />
-          <NavigationProperty Name="User1" Relationship="ITHelpDeskModel.FK__Notificat__userI__6A30C649" FromRole="Notification" ToRole="User" />
-          <Property Name="isRead" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="NotificationTemplate" Relationship="ITHelpDeskModel.FK__Notificat__templ__6C190EBB" FromRole="Notification" ToRole="NotificationTemplate" />
         </EntityType>
         <EntityType Name="NotificationStatus">
           <Key>
@@ -588,12 +583,12 @@
           <Property Name="updatedAt" Type="DateTime" Precision="3" />
           <Property Name="updatedBy" Type="Int32" />
           <NavigationProperty Name="Comments" Relationship="ITHelpDeskModel.FK__Comments__reques__5EBF139D" FromRole="Request" ToRole="Comment" />
-          <NavigationProperty Name="Notifications" Relationship="ITHelpDeskModel.FK__Notificat__reque__6E01572D" FromRole="Request" ToRole="Notification" />
           <NavigationProperty Name="RequestCategory" Relationship="ITHelpDeskModel.FK__Requests__reques__571DF1D5" FromRole="Request" ToRole="RequestCategory" />
           <NavigationProperty Name="User" Relationship="ITHelpDeskModel.FK__Requests__client__5441852A" FromRole="Request" ToRole="User" />
           <NavigationProperty Name="RequestStatus" Relationship="ITHelpDeskModel.FK__Requests__reques__5629CD9C" FromRole="Request" ToRole="RequestStatus" />
           <NavigationProperty Name="User1" Relationship="ITHelpDeskModel.FK__Requests__update__59FA5E80" FromRole="Request" ToRole="User" />
           <NavigationProperty Name="User2" Relationship="ITHelpDeskModel.FK__Requests__worker__5812160E" FromRole="Request" ToRole="User" />
+          <NavigationProperty Name="Notifications" Relationship="ITHelpDeskModel.FK__Notificat__reque__6E01572D" FromRole="Request" ToRole="Notification" />
         </EntityType>
         <EntityType Name="RequestSection">
           <Key>
@@ -645,14 +640,14 @@
           <Property Name="plainPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="phone" Type="String" MaxLength="16" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Comments" Relationship="ITHelpDeskModel.FK__Comments__userID__5FB337D6" FromRole="User" ToRole="Comment" />
-          <NavigationProperty Name="Notifications" Relationship="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4" FromRole="User" ToRole="Notification" />
-          <NavigationProperty Name="Notifications1" Relationship="ITHelpDeskModel.FK__Notificat__userI__6A30C649" FromRole="User" ToRole="Notification" />
           <NavigationProperty Name="Profession" Relationship="ITHelpDeskModel.FK__Users__professio__440B1D61" FromRole="User" ToRole="Profession" />
           <NavigationProperty Name="Requests" Relationship="ITHelpDeskModel.FK__Requests__client__5441852A" FromRole="User" ToRole="Request" />
           <NavigationProperty Name="Requests1" Relationship="ITHelpDeskModel.FK__Requests__update__59FA5E80" FromRole="User" ToRole="Request" />
           <NavigationProperty Name="Requests2" Relationship="ITHelpDeskModel.FK__Requests__worker__5812160E" FromRole="User" ToRole="Request" />
           <NavigationProperty Name="Role" Relationship="ITHelpDeskModel.FK__Users__roleID__4222D4EF" FromRole="User" ToRole="Role" />
           <NavigationProperty Name="Status" Relationship="ITHelpDeskModel.FK__Users__statusID__4316F928" FromRole="User" ToRole="Status" />
+          <NavigationProperty Name="Notifications" Relationship="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4" FromRole="User" ToRole="Notification" />
+          <NavigationProperty Name="Notifications1" Relationship="ITHelpDeskModel.FK__Notificat__userI__6A30C649" FromRole="User" ToRole="Notification" />
         </EntityType>
         <Association Name="FK__Comments__eventI__619B8048">
           <End Type="ITHelpDeskModel.CommentEvent" Role="CommentEvent" Multiplicity="0..1" />
@@ -686,54 +681,6 @@
               <PropertyRef Name="userID" />
             </Principal>
             <Dependent Role="Comment">
-              <PropertyRef Name="userID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Notificat__initi__6D0D32F4">
-          <End Type="ITHelpDeskModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="userID" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="initiatorID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Notificat__notif__6B24EA82">
-          <End Type="ITHelpDeskModel.NotificationStatus" Role="NotificationStatus" Multiplicity="1" />
-          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NotificationStatus">
-              <PropertyRef Name="notificationStatusID" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="notificationStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Notificat__reque__6E01572D">
-          <End Type="ITHelpDeskModel.Request" Role="Request" Multiplicity="0..1" />
-          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Request">
-              <PropertyRef Name="requestID" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="requestID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Notificat__userI__6A30C649">
-          <End Type="ITHelpDeskModel.User" Role="User" Multiplicity="1" />
-          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="userID" />
-            </Principal>
-            <Dependent Role="Notification">
               <PropertyRef Name="userID" />
             </Dependent>
           </ReferentialConstraint>
@@ -846,6 +793,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="notificationID" />
+          </Key>
+          <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userID" Type="Int32" Nullable="false" />
+          <Property Name="notificationStatusID" Type="Int32" Nullable="false" />
+          <Property Name="templateID" Type="Int32" Nullable="false" />
+          <Property Name="initiatorID" Type="Int32" />
+          <Property Name="requestID" Type="Int32" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="isRead" Type="Boolean" Nullable="false" />
+          <Property Name="message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4" FromRole="Notification" ToRole="User" />
+          <NavigationProperty Name="NotificationStatus" Relationship="ITHelpDeskModel.FK__Notificat__notif__6B24EA82" FromRole="Notification" ToRole="NotificationStatus" />
+          <NavigationProperty Name="Request" Relationship="ITHelpDeskModel.FK__Notificat__reque__6E01572D" FromRole="Notification" ToRole="Request" />
+          <NavigationProperty Name="NotificationTemplate" Relationship="ITHelpDeskModel.FK__Notificat__templ__6C190EBB" FromRole="Notification" ToRole="NotificationTemplate" />
+          <NavigationProperty Name="User1" Relationship="ITHelpDeskModel.FK__Notificat__userI__6A30C649" FromRole="Notification" ToRole="User" />
+        </EntityType>
         <EntityType Name="NotificationTemplate">
           <Key>
             <PropertyRef Name="templateID" />
@@ -855,6 +821,52 @@
           <Property Name="templateKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Notifications" Relationship="ITHelpDeskModel.FK__Notificat__templ__6C190EBB" FromRole="NotificationTemplate" ToRole="Notification" />
         </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK__Notificat__initi__6D0D32F4">
+          <End Type="ITHelpDeskModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="initiatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificat__notif__6B24EA82">
+          <End Type="ITHelpDeskModel.NotificationStatus" Role="NotificationStatus" Multiplicity="1" />
+          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NotificationStatus">
+              <PropertyRef Name="notificationStatusID" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="notificationStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificat__reque__6E01572D">
+          <End Type="ITHelpDeskModel.Request" Role="Request" Multiplicity="0..1" />
+          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Request">
+              <PropertyRef Name="requestID" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="requestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Notificat__templ__6C190EBB">
           <End Type="ITHelpDeskModel.NotificationTemplate" Role="NotificationTemplate" Multiplicity="1" />
           <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
@@ -864,6 +876,18 @@
             </Principal>
             <Dependent Role="Notification">
               <PropertyRef Name="templateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificat__userI__6A30C649">
+          <End Type="ITHelpDeskModel.User" Role="User" Multiplicity="1" />
+          <End Type="ITHelpDeskModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="userID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -893,20 +917,6 @@
                 <ScalarProperty Name="userID" ColumnName="userID" />
                 <ScalarProperty Name="requestID" ColumnName="requestID" />
                 <ScalarProperty Name="commentID" ColumnName="commentID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Notifications">
-            <EntityTypeMapping TypeName="ITHelpDeskModel.Notification">
-              <MappingFragment StoreEntitySet="Notifications">
-                <ScalarProperty Name="isRead" ColumnName="isRead" />
-                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-                <ScalarProperty Name="requestID" ColumnName="requestID" />
-                <ScalarProperty Name="initiatorID" ColumnName="initiatorID" />
-                <ScalarProperty Name="templateID" ColumnName="templateID" />
-                <ScalarProperty Name="notificationStatusID" ColumnName="notificationStatusID" />
-                <ScalarProperty Name="userID" ColumnName="userID" />
-                <ScalarProperty Name="notificationID" ColumnName="notificationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1002,12 +1012,38 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="ITHelpDeskModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="message" ColumnName="message" />
+                <ScalarProperty Name="isRead" ColumnName="isRead" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="requestID" ColumnName="requestID" />
+                <ScalarProperty Name="initiatorID" ColumnName="initiatorID" />
+                <ScalarProperty Name="templateID" ColumnName="templateID" />
+                <ScalarProperty Name="notificationStatusID" ColumnName="notificationStatusID" />
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="notificationID" ColumnName="notificationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NotificationTemplates">
             <EntityTypeMapping TypeName="ITHelpDeskModel.NotificationTemplate">
               <MappingFragment StoreEntitySet="NotificationTemplates">
                 <ScalarProperty Name="templateKey" ColumnName="templateKey" />
                 <ScalarProperty Name="template" ColumnName="template" />
                 <ScalarProperty Name="templateID" ColumnName="templateID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ITHelpDeskModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

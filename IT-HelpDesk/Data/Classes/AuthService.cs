@@ -22,10 +22,10 @@ namespace IT_HelpDesk.Data.Classes
             CurrentUser = null;
 
             // Очищаем сохранённые данные авторизации (если они есть)
-            Data.Settings.Default.RememberMe = false;
-            Data.Settings.Default.SavedLogin = "";
-            Data.Settings.Default.SavedPasswordHash = "";
-            Data.Settings.Default.Save();
+            Settings.Default.RememberMe = false;
+            Settings.Default.SavedLogin = "";
+            Settings.Default.SavedPasswordHash = "";
+            Settings.Default.Save();
         }
 
         public static string ComputeSha256Hash(string rawData)

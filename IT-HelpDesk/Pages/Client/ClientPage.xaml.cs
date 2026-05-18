@@ -114,7 +114,7 @@ namespace IT_HelpDesk.Pages.Client
             ConnectObject.GetConnect().SaveChanges();
 
             string templateKey = (oldStatusID == 1) ? "Success_Request_Cancelled" : "Success_Request_Closed";
-            NotificationService.Create(userId: AuthService.CurrentUser.userID, templateKey: templateKey, requestId: requestID);
+            NotificationService.Create(AuthService.CurrentUser.userID, templateKey, requestId: requestID, formatArgs: requestID);
 
             LoadRequests();
         }

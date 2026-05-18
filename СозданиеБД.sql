@@ -34,9 +34,9 @@ CREATE TABLE Users (
 	professionID INT FOREIGN KEY REFERENCES Professions(professionID) DEFAULT NULL,
 	createdAt DATETIME DEFAULT GETDATE(),
 	email NVARCHAR(64),
-	phone NVARCHAR(20),
+	phone NVARCHAR(16),
 	mistakeCount INT CHECK (mistakeCount >= 0) DEFAULT 0,
-	plainPassword NVARCHAR(255) NULL
+	plainPassword NVARCHAR(255)
 );
 
 -- Справочник разделов заявок
@@ -113,6 +113,7 @@ CREATE TABLE Notifications (
     initiatorID INT NULL FOREIGN KEY REFERENCES Users(userID),
     requestID INT NULL  FOREIGN KEY REFERENCES Requests(requestID),
     createdAt DATETIME DEFAULT GETDATE(),
+	message NVARCHAR(MAX) NOT NULL DEFAULT '',
 	isRead BIT NOT NULL DEFAULT 0
 );
 
@@ -192,8 +193,9 @@ INSERT INTO NotificationTemplates (templateKey, template) VALUES
 	('Notification_Completed_ToClient', 'Ваша заявка #{0} выполнена'),
 	('Notification_Closed_ToManager', 'Клиент закрыл заявку #{0}'),
 	('Notification_UserBlocked_ToAdmin', 'Пользователь {0} был заблокирован из-за превышения числа попыток входа'),
-	('Notification_StatusChanged', 'Статус заявки #{0} был изменён.'),
+	('Notification_StatusChanged', 'Статус заявки #{0} был изменён на '''{1}'''.'),
 	('Notification_ExecutorRemoved', 'Ваше назначение в заявке #{0} отменено'),
+	('MassMailing_Notification', 'Массовая рассылка: {0}'),
 	('Success_Request_Created', 'Заявка #{0} успешно создана!'),
 	('Success_Request_Cancelled', 'Заявка #{0} успешно отменена!'),
 	('Success_Request_Closed', 'Заявка #{0} успешно закрыта!'),

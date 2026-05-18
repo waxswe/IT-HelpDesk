@@ -269,7 +269,7 @@ namespace IT_HelpDesk.Pages.Administrator
 
         private void MassMailingButton_Click(object sender, RoutedEventArgs e)
         {
-
+            FrameObject.frameMain.Navigate(new MassMailing());
         }
 
         private void UsersItemsControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

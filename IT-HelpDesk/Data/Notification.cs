@@ -22,11 +22,12 @@ namespace IT_HelpDesk.Data
         public Nullable<int> requestID { get; set; }
         public Nullable<System.DateTime> createdAt { get; set; }
         public bool isRead { get; set; }
+        public string message { get; set; }
     
         public virtual User User { get; set; }
         public virtual NotificationStatus NotificationStatus { get; set; }
         public virtual Request Request { get; set; }
-        public virtual User User1 { get; set; }
         public virtual NotificationTemplate NotificationTemplate { get; set; }
+        public virtual User User1 { get; set; }
     }
 }

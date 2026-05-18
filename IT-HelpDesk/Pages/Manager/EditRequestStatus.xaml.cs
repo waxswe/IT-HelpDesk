@@ -27,6 +27,8 @@ namespace IT_HelpDesk.Pages.Manager
     {
         private Request _currentRequest;
         private bool _isNewRequest = false;
+
+        LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
         public EditRequestStatus(Request request)
         {
             InitializeComponent();
@@ -53,15 +55,20 @@ namespace IT_HelpDesk.Pages.Manager
 
             CBSection.IsEnabled = false;
             CBCategory.IsEnabled = false;
+            if (AuthService.CurrentUser.roleID == 4)
+            {
+                CBStatus.IsEnabled = false;
+                StatusStar.Foreground = Brushes.Black;
+                StatusStar.ToolTip = GetLoc("ReadOnly_Fields_Note");
+                AddEditCaseLabel.Content = GetLoc("View_Request");
+            }
 
-            LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
             if (loc != null) loc.LanguageChanged += OnLanguageChanged;
             
         }
 
         private void LoadSections()
         {
-            LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
             
             List<RequestSection> sections = ConnectObject.GetConnect().RequestSections.ToList();
             var items = sections.Select(s => new
@@ -147,10 +154,7 @@ namespace IT_HelpDesk.Pages.Manager
                     request.requestStatusID = newStatusId;
                     request.updatedAt = DateTime.Now;
                     request.updatedBy = AuthService.CurrentUser.userID;
-                    if (newStatusId == 1)
-                    {
-                        request.workerID = null;
-                    }
+                    
                     updatedRequest = request;
                 }
                 else
@@ -160,28 +164,38 @@ namespace IT_HelpDesk.Pages.Manager
                 }
             }
 
-
             try
             {
-                await ConnectObject.GetConnect().SaveChangesAsync();
-
+                int? oldWorkerId = null;
                 Request savedRequest = ConnectObject.GetConnect().Requests.Find(_currentRequest.requestID);
-                if (savedRequest.clientID != AuthService.CurrentUser.userID)
-                {
-                    NotificationService.Create(savedRequest.clientID, "Notification_StatusChanged", savedRequest.requestID, AuthService.CurrentUser.userID);
-                }
-                if (savedRequest.workerID.HasValue && savedRequest.workerID.Value != AuthService.CurrentUser.userID)
-                {
-                    NotificationService.Create(savedRequest.workerID.Value, "Notification_StatusChanged", savedRequest.requestID, AuthService.CurrentUser.userID);
-                }
 
-
-                CommentHelper.AddSystemComment(_currentRequest.requestID, "StatusChanged", newStatusName);
-                if (newStatusId == 1 && savedRequest.workerID != null)
+                if (savedRequest != null)
                 {
-                    CommentHelper.AddSystemComment(savedRequest.requestID, "ExecutorRemoved", "");
-                    NotificationService.Create(updatedRequest.workerID.Value, "Notification_ExecutorRemoved", updatedRequest.requestID, AuthService.CurrentUser.userID);
+                    oldWorkerId = savedRequest.workerID;
+                    savedRequest.requestStatusID = newStatusId;
+                    savedRequest.updatedAt = DateTime.Now;
+                    savedRequest.updatedBy = AuthService.CurrentUser.userID;
+                        
+
+                    if (savedRequest.clientID != AuthService.CurrentUser.userID)
+                    {
+                        NotificationService.Create(savedRequest.clientID, "Notification_StatusChanged", savedRequest.requestID, AuthService.CurrentUser.userID, newStatusName);
+                    }
+                    if (savedRequest.workerID.HasValue && savedRequest.workerID.Value != AuthService.CurrentUser.userID)
+                    {
+                        NotificationService.Create(savedRequest.workerID.Value, "Notification_StatusChanged", savedRequest.requestID, AuthService.CurrentUser.userID, newStatusName);
+                    }
+
+                    CommentHelper.AddSystemComment(_currentRequest.requestID, "StatusChanged", newStatusName);
+                    System.Diagnostics.Debug.WriteLine($"newStatusId={newStatusId}, workerID={savedRequest.workerID}, currentUser={AuthService.CurrentUser.userID}");
+                    if (newStatusId == 1 && oldWorkerId.HasValue && oldWorkerId.Value != AuthService.CurrentUser.userID)
+                    {
+                        CommentHelper.AddSystemComment(_currentRequest.requestID, "ExecutorRemoved", "");
+                        NotificationService.Create(oldWorkerId.Value, "Notification_ExecutorRemoved", requestId: _currentRequest.requestID, initiatorId: AuthService.CurrentUser.userID, formatArgs: _currentRequest.requestID);
+                        savedRequest.workerID = null;
+                    }
                 }
+                await ConnectObject.GetConnect().SaveChangesAsync();
 
                 MessageBox.Show(GetLoc("Request_Updated_Success"), GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
                 FrameObject.frameMain.GoBack();

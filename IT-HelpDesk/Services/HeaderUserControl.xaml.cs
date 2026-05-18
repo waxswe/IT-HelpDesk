@@ -51,7 +51,7 @@ namespace IT_HelpDesk.Controls
         {
             if (AuthService.CurrentUser == null) return;
             LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
-            List<NotificationItem> items = NotificationService.GetNotificationsPage(AuthService.CurrentUser.userID, _skip, Take, loc);
+            List<NotificationItem> items = NotificationService.GetNotificationsPage(AuthService.CurrentUser.userID, _skip, Take);
             _notifications = items.ToList<dynamic>();
 
             bool hasNotifications = _notifications.Any();
@@ -69,8 +69,8 @@ namespace IT_HelpDesk.Controls
             if (AuthService.CurrentUser == null) return;
             _skip += Take;
             LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
-            List<NotificationItem> newItems = NotificationService.GetNotificationsPage(AuthService.CurrentUser.userID, _skip, Take, loc);
-            foreach (NotificationItem item in newItems)
+            List<NotificationItem> items = NotificationService.GetNotificationsPage(AuthService.CurrentUser.userID, _skip, Take);
+            foreach (NotificationItem item in items)
                 _notifications.Add(item);
             NotificationsItemsControl.ItemsSource = null;
             NotificationsItemsControl.ItemsSource = _notifications;
@@ -160,7 +160,6 @@ namespace IT_HelpDesk.Controls
 
         private void LanguageButton_Click(object sender, RoutedEventArgs e)
         {
-            // Берём текущий ресурс локализации
             LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
             if (loc == null) return;
 

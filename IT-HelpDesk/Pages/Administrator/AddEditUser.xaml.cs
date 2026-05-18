@@ -224,12 +224,7 @@ namespace IT_HelpDesk.Pages.Administrator
                     if (loc?.CurrentLanguage == "en")
                         adminName = loc.Transliterate(adminName);
 
-                    NotificationService.Create(
-                        userId: _tempUser.userID,
-                        templateKey: "Notification_UserDataChanged",
-                        requestId: null,
-                        initiatorId: AuthService.CurrentUser.userID
-                    );
+                    NotificationService.Create(_tempUser.userID, "Notification_UserDataChanged", initiatorId: AuthService.CurrentUser.userID, formatArgs: AuthService.CurrentUser.name);
                 }
 
                 MessageBox.Show(isNewUser ? GetLoc("User_Added") : GetLoc("User_Updated"), GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);

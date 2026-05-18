@@ -21,7 +21,7 @@ namespace IT_HelpDesk.Data.Classes
 
         public LocalizationManager()
         {
-            string savedLang = Data.Settings.Default.Language;
+            string savedLang = Settings.Default.Language;
             if (!string.IsNullOrEmpty(savedLang))
                 _currentLanguage = savedLang;
         }
@@ -59,8 +59,8 @@ namespace IT_HelpDesk.Data.Classes
             if (languageCode == _currentLanguage) return;
             _currentLanguage = languageCode;
             _isLoaded = false;
-            Data.Settings.Default.Language = languageCode;
-            Data.Settings.Default.Save();
+            Settings.Default.Language = languageCode;
+            Settings.Default.Save();
 
             EnsureLoaded();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));

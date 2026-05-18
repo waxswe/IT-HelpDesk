@@ -43,6 +43,10 @@ namespace IT_HelpDesk.Pages.Client
                 isNewCase = true;
             }
 
+
+            if (isNewCase)
+                CommentsButton.Visibility = Visibility.Collapsed;
+
             DataContext = _currentCase;
             LoadSectionsAndCategories();
             LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
@@ -161,19 +165,25 @@ namespace IT_HelpDesk.Pages.Client
                 _currentCase.requestStatusID = 1;
                 ConnectObject.GetConnect().Requests.Add(_currentCase);
                 _currentCase.createdAt = DateTime.Now;
-
-                List<User> managers = ConnectObject.GetConnect().Users.Where(u => u.roleID == 3 && u.statusID == 1).ToList();
-                foreach (User manager in managers)
-                {
-                    NotificationService.Create(manager.userID, "Notification_NewRequest_ToManager", _currentCase.requestID);
-                }
-                NotificationService.Create(userId: AuthService.CurrentUser.userID, templateKey: "Success_Request_Created", requestId: _currentCase.requestID);
-                CommentHelper.AddSystemComment(_currentCase.requestID, "Created", _currentCase.requestID);
             }
             try
             {
                 ConnectObject.GetConnect().SaveChanges();
-                
+
+                if (_currentCase.requestID != 0)
+                {
+                    // Уведомления менеджерам
+                    List<User> managers = ConnectObject.GetConnect().Users.Where(u => u.roleID == 3 && u.statusID == 1).ToList();
+                    foreach (User manager in managers)
+                    {
+                        NotificationService.Create(manager.userID, "Notification_NewRequest_ToManager", requestId: _currentCase.requestID, formatArgs: _currentCase.requestID);
+                    }
+                    // Уведомление пользователю об успешном создании
+                    NotificationService.Create(AuthService.CurrentUser.userID, "Success_Request_Created", requestId: _currentCase.requestID, formatArgs: _currentCase.requestID);
+                    // Системный комментарий
+                    CommentHelper.AddSystemComment(_currentCase.requestID, "Created", _currentCase.requestID);
+                }
+
                 MessageBox.Show(isNewCase ? GetLoc("Case_Added_Success") : GetLoc("Case_Updated_Success"), GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -181,7 +191,7 @@ namespace IT_HelpDesk.Pages.Client
                 MessageBox.Show(ex.Message, GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            FrameObject.frameMain.Navigate(new ClientPage());
+            FrameObject.frameMain.GoBack();
         }
 
         private string GetLoc(string key)

@@ -226,6 +226,16 @@ namespace IT_HelpDesk.Pages._General
                         _currentRequest.requestStatusID = request.requestStatusID;
                         UpdateInputAvailability();
                     }
+
+                    if (request.clientID != currentUser.userID)
+                    {
+                        NotificationService.Create(request.clientID, "Notification_Comment_ToClient", requestId: request.requestID, initiatorId: currentUser.userID, formatArgs: request.requestID);
+                    }
+                    // Уведомление исполнителю (если есть и не текущий)
+                    if (request.workerID.HasValue && request.workerID.Value != currentUser.userID)
+                    {
+                        NotificationService.Create(request.workerID.Value, "Notification_Comment_ToExecutor", requestId: request.requestID, initiatorId: currentUser.userID, formatArgs: request.requestID);
+                    }
                 }
             }
 

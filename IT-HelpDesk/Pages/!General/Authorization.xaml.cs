@@ -31,19 +31,26 @@ namespace IT_HelpDesk.Pages._General
 
             Loaded += LoginWindow_Loaded;
 
-            //AuthService.setPassword("1", "1");
+            //AuthService.setPassword("1", "1"); // Дать пользователь "1" пароль "1". Первое число - логин, второе - пароль. Не забудьте удалить или закомментировать этот код, если его использовали
         }
 
         private void LoginWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            TBLogin.Text = Settings.Default.LastLogin;
+            PBPassword.Focus();
+
             if (Settings.Default.RememberMe)
             {
-                TBLogin.Text = Settings.Default.SavedLogin;
                 RememberMeCheckBox.IsChecked = Settings.Default.RememberMe;
                 TryAutoLogin();
             }
         }
 
+        /// <summary>
+        /// Обработчик нажатия кнопки входа
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EnterButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TBLogin.Text) || string.IsNullOrWhiteSpace(PBPassword.Password))
@@ -93,6 +100,7 @@ namespace IT_HelpDesk.Pages._General
                     Settings.Default.RememberMe = true;
                     Settings.Default.SavedLogin = TBLogin.Text;
                     Settings.Default.SavedPasswordHash = hashedInputPassword;
+                    Settings.Default.LastLogin = TBLogin.Text;
                     Settings.Default.Save();
                 }
                 else
@@ -100,6 +108,7 @@ namespace IT_HelpDesk.Pages._General
                     Settings.Default.RememberMe = false;
                     Settings.Default.SavedLogin = "";
                     Settings.Default.SavedPasswordHash = "";
+                    Settings.Default.LastLogin = "";
                     Settings.Default.Save();
                 }
 

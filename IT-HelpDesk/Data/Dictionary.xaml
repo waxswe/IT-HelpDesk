@@ -95,7 +95,6 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderBrush" Value="Black"/>
     </Style>
 
     <Style TargetType="{x:Type MenuItem}">

@@ -56,7 +56,7 @@
             <StackPanel HorizontalAlignment="Left" Grid.Row="2" Grid.Column="3">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Choose_Case_Status]}" HorizontalAlignment="Left"/>
-					<TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[RequiredField_Tooltip]}"/>
+					<TextBlock x:Name="StatusStar" Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[RequiredField_Tooltip]}"/>
                 </StackPanel>
                 <ComboBox x:Name="CBStatus" SelectedValuePath="requestStatusID" DisplayMemberPath="LocalizedName" Height="30" Width="225"/>
             </StackPanel>

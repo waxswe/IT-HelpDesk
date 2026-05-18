@@ -168,13 +168,15 @@ namespace IT_HelpDesk.Pages.Executor
                 {
                     // Менеджерам
                     List<User> managers = ConnectObject.GetConnect().Users.Where(u => u.roleID == 3 && u.statusID == 1).ToList();
+                    User executor = ConnectObject.GetConnect().Users.FirstOrDefault(u => u.userID == req.workerID);
+                    string executorName = executor.name;
                     foreach (User manager in managers)
-                        NotificationService.Create(manager.userID, "Notification_Completed_ToManager", request.requestID, AuthService.CurrentUser.userID);
+                        NotificationService.Create(manager.userID, "Notification_Completed_ToManager", requestId: request.requestID, initiatorId: AuthService.CurrentUser.userID, formatArgs: executorName);
                     // Клиенту
                     if (request.clientID != AuthService.CurrentUser.userID)
-                        NotificationService.Create(request.clientID, "Notification_Completed_ToClient", request.requestID, AuthService.CurrentUser.userID);
+                        NotificationService.Create(request.clientID, "Notification_Completed_ToClient", requestId: request.requestID, initiatorId: AuthService.CurrentUser.userID, formatArgs: request.requestID);
 
-                    NotificationService.Create(userId: AuthService.CurrentUser.userID, templateKey: "Success_Request_Completed", requestId: request.requestID);
+                    NotificationService.Create(AuthService.CurrentUser.userID, "Success_Request_Completed", requestId: request.requestID, formatArgs: request.requestID);
                     CommentHelper.AddSystemComment(request.requestID, "Completed");
                 }
 
