@@ -27,7 +27,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -91,7 +91,12 @@
                 </StackPanel>
 
                 <!-- Статистика -->
-                <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,20,0,0" Padding="12" CornerRadius="12" 
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Grid.Row="5" Grid.ColumnSpan="2">
+                    <RadioButton x:Name="PeriodMonth" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_CurrentMonth]}" GroupName="Period" Margin="0,0,10,0" IsChecked="True" Checked="Period_Changed"/>
+                    <RadioButton x:Name="PeriodAllTime" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_AllTime]}" GroupName="Period" Margin="0,0,0,0" Checked="Period_Changed"/>
+                </StackPanel>
+                
+                <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,40,0,0" Padding="12" CornerRadius="12" 
                         Background="#F8F9FA" BorderBrush="#DDDDDD" BorderThickness="1">
                     <StackPanel>
                         <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Statistics_Title]}" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>

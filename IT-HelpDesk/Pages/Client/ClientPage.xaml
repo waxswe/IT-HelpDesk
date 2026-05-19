@@ -21,75 +21,66 @@
 
             <!-- Список обращений -->
             <ScrollViewer Margin="30,55,30,50" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="RequestsItemsControl">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Margin="0,0,0,10" Padding="0,0,0,8"
-            MouseLeftButtonUp="Case_MouseLeftButtonUp" Cursor="Hand">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" MinWidth="300"/>
-                                        <!-- Левая часть: текст -->
-                                        <ColumnDefinition Width="Auto"/>
-                                        <!-- Правая часть: блоки статуса/дат/кнопка -->
-                                    </Grid.ColumnDefinitions>
+                <Grid>
+                    <ItemsControl x:Name="RequestsItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Margin="0,0,0,10" Padding="0,0,0,8" MouseLeftButtonUp="Case_MouseLeftButtonUp" Cursor="Hand">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" MinWidth="300"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <!-- Левая часть -->
-                                    <StackPanel Grid.Column="0" Margin="0,0,15,0" HorizontalAlignment="Left">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding RequestNumber}" Grid.Column="0" Foreground="#444444" FontWeight="SemiBold" Margin="0,0,15,0"/>
-                                            <TextBlock Text="{Binding Category}" Grid.Column="1" Foreground="#444444" FontWeight="SemiBold" Margin="0,0,25,0"/>
-                                            <TextBlock Text="{Binding Title}" Grid.Column="2" Foreground="#444444" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
-                                        </Grid>
-                                        <TextBlock Text="{Binding Description}" Foreground="White" Margin="0,5,0,0" 
-                           TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" MaxWidth="500" HorizontalAlignment="Left"/>
-                                    </StackPanel>
-
-                                    <!-- Правая часть (прижата к правому краю) -->
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,0,0,0">
-                                        <!-- Статус -->
-                                        <StackPanel Orientation="Vertical" MinWidth="90" Margin="15,0,15,0">
-                                            <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Status_Label_Client]}" Foreground="#444444" FontWeight="SemiBold"/>
-                                            <TextBlock Text="{Binding StatusName}" Foreground="White" Margin="0,2,0,0"/>
+                                        <!-- Левая часть -->
+                                        <StackPanel Grid.Column="0" Margin="0,0,15,0" HorizontalAlignment="Left">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding RequestNumber}" Grid.Column="0" Foreground="#444444" FontWeight="SemiBold" Margin="0,0,15,0"/>
+                                                <TextBlock Text="{Binding Category}" Grid.Column="1" Foreground="#444444" FontWeight="SemiBold" Margin="0,0,25,0"/>
+                                                <TextBlock Text="{Binding Title}" Grid.Column="2" Foreground="#444444" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Description}" Foreground="White" Margin="0,5,0,0" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" MaxWidth="500" HorizontalAlignment="Left"/>
                                         </StackPanel>
 
-                                        <!-- Последнее обновление -->
-                                        <StackPanel Orientation="Vertical" MinWidth="110" Margin="0,0,15,0">
-                                            <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Last_Update_Label_Client]}" Foreground="#444444" FontWeight="SemiBold"/>
-                                            <TextBlock Text="{Binding LastResponse}" Foreground="White" Margin="0,2,0,0"/>
+                                        <!-- Правая часть -->
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,0,0,0">
+                                            <StackPanel Orientation="Vertical" MinWidth="90" Margin="15,0,15,0">
+                                                <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Status_Label_Client]}" Foreground="#444444" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding StatusName}" Foreground="White" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical" MinWidth="110" Margin="0,0,15,0">
+                                                <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Last_Update_Label_Client]}" Foreground="#444444" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding LastResponse}" Foreground="White" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical" MinWidth="110" Margin="0,0,15,0">
+                                                <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Created_Label_Client]}" Foreground="#444444" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding CreatedAt}" Foreground="White" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                            <Border Width="85" Margin="5,0,0,0">
+                                                <Button Content="{Binding ActionButtonText}" Width="85" Height="30" Click="ActionButton_Click" Tag="{Binding}" Visibility="{Binding ActionButtonVisibility}" VerticalAlignment="Center" ToolTip="{Binding ActionButtonText}"/>
+                                            </Border>
                                         </StackPanel>
-
-                                        <!-- Дата создания -->
-                                        <StackPanel Orientation="Vertical" MinWidth="110" Margin="0,0,15,0">
-                                            <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[Created_Label_Client]}" Foreground="#444444" FontWeight="SemiBold"/>
-                                            <TextBlock Text="{Binding CreatedAt}" Foreground="White" Margin="0,2,0,0"/>
-                                        </StackPanel>
-
-                                        <!-- Кнопка-иконка -->
-                                        <Border Width="85" Margin="5,0,0,0">
-                                            <Button Content="{Binding ActionButtonText}" Width="85" Height="30" Click="ActionButton_Click" Tag="{Binding}" Visibility="{Binding ActionButtonVisibility}" VerticalAlignment="Center" ToolTip="{Binding ActionButtonText}"/>
-                                        </Border>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="NoRequestsTextBlock" Text="{Binding Source={StaticResource LocalizationManager}, Path=[NoRequests_ClientPlaceholder]}" FontSize="16" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                </Grid>
             </ScrollViewer>
 
             <!-- Пагинация -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,20">
+            <StackPanel x:Name="PaginationPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,20">
                 <Button x:Name="PrevPageButton" Content="&lt;" Width="30" Height="30" Margin="5" Click="PrevPage_Click" IsEnabled="False"/>
                 <TextBlock x:Name="PageInfo" Text="Страница 1/1" VerticalAlignment="Center" Margin="10,0" Foreground="White"/>
                 <Button x:Name="NextPageButton" Content="&gt;" Width="30" Height="30" Margin="5" Click="NextPage_Click" IsEnabled="False"/>
-                <TextBox x:Name="TBPageNumber" Width="40" Height="25" Margin="10,0,5,0" TextAlignment="Center" HorizontalContentAlignment="Center" 
-                         KeyDown="TBPageNumber_KeyDown" Background="White" Foreground="Black" Text="1" PreviewTextInput="TBPageNumber_PreviewTextInput"/>
-                <Button Content="Перейти" Width="60" Height="25" Margin="0,0,5,0" Click="GoToPageButton_Click"/>
+                <TextBox x:Name="TBPageNumber" Width="40" Height="25" Margin="10,0,5,0" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="TBPageNumber_KeyDown" Background="White" Foreground="Black" Text="1" PreviewTextInput="TBPageNumber_PreviewTextInput"/>
+                <Button Content="{Binding Source={StaticResource LocalizationManager}, Path=[GoTo_Button]}" Width="60" Height="25" Margin="0,0,5,0" Click="GoToPageButton_Click"/>
             </StackPanel>
         </Grid>
         <Button x:Name="NewCaseButton" Click="NewCaseButton_Click" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Add_Request]}" Grid.Column="2" Width="150"/>

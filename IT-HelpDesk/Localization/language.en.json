@@ -115,6 +115,7 @@
     "Status_Label_Client": "Status:",
     "Last_Update_Label_Client": "Last update:",
     "Created_Label_Client": "Created:",
+    "NoRequests_ClientPlaceholder": "No requests yet",
     // AddEdit Case Page
     "Add_Request": "New request",
     "Edit_Request": "Edit request",
@@ -258,7 +259,7 @@
     "Notification_NeedManager_ToManager": "Request #{0} requires manager intervention",
     "CallManager_Sent": "Request sent to manager",
     // Executor Statistics Page
-    "ExecutorStatistics_Title": "Executor Statistics",
+    "ExecutorStatistics_Title": "Executor Reports",
     "ExecutorStatistics_Column_FullName": "Full Name",
     "ExecutorStatistics_Column_Profession": "Profession",
     "ExecutorStatistics_Column_Total": "Total requests",

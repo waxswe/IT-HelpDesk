@@ -91,82 +91,65 @@ namespace IT_HelpDesk.Pages.Manager
         {
             DateTime? from = DateFrom.SelectedDate;
             DateTime? to = DateTo.SelectedDate;
-            if (from == null && to == null && (PeriodCustom.IsChecked == false))
+
+            if (PeriodCustom.IsChecked == true && (!from.HasValue || !to.HasValue))
             {
-            }
-            else if (from == null || to == null)
-            {
-                MessageBox.Show("Укажите начальную и конечную дату", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(GetLoc("Export_DateMissing"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            List<ExecutorStat> filteredStats = _allStats;
-            string period = "";
-            if (PeriodCurrentMonth.IsChecked == true) period = "CurrentMonth";
-            else if (PeriodPreviousMonth.IsChecked == true) period = "PreviousMonth";
-            else if (PeriodAllTime.IsChecked == true) period = "AllTime";
-            else period = "Custom";
+            string periodType = "";
+            if (PeriodCurrentMonth.IsChecked == true) periodType = "CurrentMonth";
+            else if (PeriodPreviousMonth.IsChecked == true) periodType = "PreviousMonth";
+            else if (PeriodAllTime.IsChecked == true) periodType = "AllTime";
+            else periodType = "Custom";
 
             // Загружаем данные за выбранный период
-            List<ExecutorStat> newStats = LoadStatisticsForPeriod(from, to, period);
+            List<ExecutorStat> data = LoadStatisticsForPeriod(from, to, periodType);
+            if (data == null || data.Count == 0)
+            {
+                MessageBox.Show(GetLoc("Export_NoData"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             if (RadioExcel.IsChecked == true)
-                ExportToExcel(newStats, from, to, period);
+                ExportToExcel(data, from, to, periodType);
             else
-                ExportToCsv(newStats, from, to, period);
+                ExportToCsv(data, from, to, periodType);
 
             DialogResult = true;
             Close();
         }
 
-        private List<ExecutorStat> LoadStatisticsForPeriod(DateTime? from, DateTime? to, string period)
+        private List<ExecutorStat> LoadStatisticsForPeriod(DateTime? from, DateTime? to, string periodType)
         {
-            List<User> executors = ConnectObject.GetConnect().Users.Where(u => u.roleID == 4 && u.statusID == 1).ToList();
             DateTime startDate, endDate;
-            if (period == "AllTime")
+
+            if (periodType == "AllTime")
             {
                 startDate = DateTime.MinValue;
                 endDate = DateTime.MaxValue;
             }
+            else if (periodType == "CurrentMonth" || periodType == "PreviousMonth" || periodType == "Custom")
+            {
+                if (from.HasValue && to.HasValue)
+                {
+                    startDate = from.Value;
+                    endDate = to.Value;
+                }
+                else
+                {
+                    startDate = DateTime.Now.AddMonths(-1);
+                    endDate = DateTime.Now;
+                }
+            }
             else
             {
-                startDate = from.Value;
-                endDate = to.Value;
+                startDate = DateTime.MinValue;
+                endDate = DateTime.MaxValue;
             }
 
-            List<Request> allRequests = ConnectObject.GetConnect().Requests.Where(r => r.workerID != null && (r.requestStatusID >= 2 && r.requestStatusID <= 5 || r.requestStatusID == 7) &&
-                            (period == "AllTime" || (r.createdAt >= startDate && r.createdAt <= endDate))).ToList();
-
-            List<Request> globalInProgress = allRequests.Where(r => r.requestStatusID >= 2 && r.requestStatusID <= 4).ToList();
-            int globalInProgressCount = globalInProgress.Count;
-
-            List<ExecutorStat> stats = new List<ExecutorStat>();
-            foreach (User executor in executors)
-            {
-                List<Request> requests = allRequests.Where(r => r.workerID == executor.userID).ToList();
-                int total = requests.Count;
-                int assigned = requests.Count(r => r.requestStatusID == 2);
-                int inProgress = requests.Count(r => r.requestStatusID == 3 || r.requestStatusID == 4);
-                int completed = requests.Count(r => r.requestStatusID == 5 || r.requestStatusID == 7);
-                double completionPercent = total == 0 ? 0 : (double)completed / total * 100;
-                double loadPercent = globalInProgressCount == 0 ? 0 : (double)(assigned + inProgress) / globalInProgressCount * 100;
-
-                string profession = executor.professionID.HasValue ?
-                    (_loc?.GetProfessionTranslation(executor.professionID.Value) ?? "—") : "—";
-                string fullName = (_loc?.CurrentLanguage == "en" && _loc != null) ? _loc.Transliterate(executor.name) : executor.name;
-
-                stats.Add(new ExecutorStat
-                {
-                    FullName = fullName,
-                    Profession = profession,
-                    TotalRequests = total,
-                    AssignedRequests = assigned,
-                    InProgressRequests = inProgress,
-                    CompletedRequests = completed,
-                    CompletionPercent = completionPercent.ToString("F1") + "%",
-                    LoadPercent = loadPercent.ToString("F1") + "%"
-                });
-            }
-            return stats.OrderBy(s => s.FullName).ToList();
+            return StatisticsHelper.GetExecutorStats(startDate, endDate);
         }
 
         private void ExportToExcel(List<ExecutorStat> data, DateTime? from, DateTime? to, string period)
@@ -176,7 +159,7 @@ namespace IT_HelpDesk.Pages.Manager
                 ExcelPackage.License.SetNonCommercialPersonal("YourName");
                 using (var package = new ExcelPackage())
                 {
-                    var worksheet = package.Workbook.Worksheets.Add("Report");
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Report");
                     // Заголовок с периодом
                     string header = GetPeriodHeader(from, to, period);
                     worksheet.Cells[1, 1].Value = header;

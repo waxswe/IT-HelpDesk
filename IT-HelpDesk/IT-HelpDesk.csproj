@@ -115,7 +115,9 @@
     <Compile Include="Data\Classes\AvatarHelper.cs" />
     <Compile Include="Data\Classes\CommentHelper.cs" />
     <Compile Include="Data\Classes\ExecutorStat.cs" />
+    <Compile Include="Data\Classes\NotificationItem.cs" />
     <Compile Include="Data\Classes\NotificationService.cs" />
+    <Compile Include="Data\Classes\StatisticsHelper.cs" />
     <Compile Include="Data\Comment.cs">
       <DependentUpon>HelpDeskDB.tt</DependentUpon>
     </Compile>

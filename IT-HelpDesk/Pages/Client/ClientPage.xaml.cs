@@ -69,6 +69,13 @@ namespace IT_HelpDesk.Pages.Client
         private void UpdatePage()
         {
             if (_allRequests == null) return;
+            bool hasRequests = _allRequests.Count > 0;
+
+            RequestsItemsControl.Visibility = hasRequests ? Visibility.Visible : Visibility.Collapsed;
+            NoRequestsTextBlock.Visibility = hasRequests ? Visibility.Collapsed : Visibility.Visible;
+            PaginationPanel.Visibility = hasRequests ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!hasRequests) return;
             dynamic paged = _allRequests.Skip((_currentPage - 1) * PageSize).Take(PageSize).ToList();
             RequestsItemsControl.ItemsSource = paged;
             int totalPages = (int)Math.Ceiling(_allRequests.Count / (double)PageSize);

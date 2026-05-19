@@ -115,6 +115,7 @@
     "Status_Label_Client": "Статус:",
     "Last_Update_Label_Client": "Последнее обновление:",
     "Created_Label_Client": "Создано:",
+    "NoRequests_ClientPlaceholder": "Заявок ещё не было",
     // Окно добавления или изменения заявки
     "Add_Request": "Создать заявку",
     "Edit_Request": "Изменить заявку",
@@ -170,7 +171,7 @@
     "Footer_Phone": "Телефон: +7 (910) 386-95-19",
     "Footer_Email": "Электронная почта: it@it-nn.com",
     // Профиль пользователя
-    "User_Profile": "Профиль пользователя: {0}",
+    "User_Profile": "Профиль пользователя {0}",
     "Profile_Title": "Личные данные",
     "Edit_Tooltip": "Редактировать профиль",
     "Role_Label_Profile": "Роль:",
@@ -267,7 +268,7 @@
     "Notification_NeedManager_ToManager": "В заявке #{0} требуется вмешательство менеджера",
     "CallManager_Sent": "Запрос отправлен менеджеру",
     // Статистика исполнителей
-    "ExecutorStatistics_Title": "Статистика исполнителей",
+    "ExecutorStatistics_Title": "Отчёт по исполнителям",
     "ExecutorStatistics_Column_FullName": "ФИО",
     "ExecutorStatistics_Column_Profession": "Профессия",
     "ExecutorStatistics_Column_Total": "Всего заявок",

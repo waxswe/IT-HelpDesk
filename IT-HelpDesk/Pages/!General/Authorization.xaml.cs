@@ -37,7 +37,8 @@ namespace IT_HelpDesk.Pages._General
         private void LoginWindow_Loaded(object sender, RoutedEventArgs e)
         {
             TBLogin.Text = Settings.Default.LastLogin;
-            PBPassword.Focus();
+            if (TBLogin.Text != null) PBPassword.Focus();
+            else TBLogin.Focus();
 
             if (Settings.Default.RememberMe)
             {
@@ -159,10 +160,29 @@ namespace IT_HelpDesk.Pages._General
             }
         }
 
-
         private void ForgotPassword_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(GetLoc("Forget_Password_Messagebox"), GetLoc("Forget_Password_Messagebox_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void LoginPassword_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
+            {
+                if (sender == TBLogin)
+                    PBPassword.Focus();
+                else if (sender == PBPassword)
+                    TBLogin.Focus();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Up)
+            {
+                if (sender == TBLogin)
+                    PBPassword.Focus();
+                else if (sender == PBPassword)
+                    TBLogin.Focus();
+                e.Handled = true;
+            }
         }
 
         private void EyeIcon_MouseEnter(object sender, MouseEventArgs e)

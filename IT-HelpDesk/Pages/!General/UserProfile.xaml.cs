@@ -249,30 +249,40 @@ namespace IT_HelpDesk.Pages._General
         {
             if (_displayUser == null) return;
 
+            DateTime now = DateTime.Now;
+            DateTime startDate = PeriodMonth.IsChecked == true ? new DateTime(now.Year, now.Month, 1) : DateTime.MinValue;
+            DateTime endDate = PeriodMonth.IsChecked == true ? startDate.AddMonths(1).AddDays(-1) : DateTime.MaxValue;
+
             LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
             string statText = "";
 
             switch (_displayUser.roleID)
             {
                 case 2: // Клиент
-                    int totalRequests = ConnectObject.GetConnect().Requests.Count(r => r.clientID == _displayUser.userID);
-                    int activeRequests = ConnectObject.GetConnect().Requests.Count(r => r.clientID == _displayUser.userID && r.requestStatusID >= 1 && r.requestStatusID <= 4);
-                    statText = string.Format(loc?["Statistics_Client"] ?? "Всего заявок: {0}\nАктивных заявок: {1}", totalRequests, activeRequests);
+                    var clientStat = StatisticsHelper.GetClientStat(_displayUser, startDate, endDate);
+                    statText = string.Format(loc?["Statistics_Client"] ?? "Total requests: {0}\nActive requests: {1}",
+                        clientStat.TotalRequests, clientStat.ActiveRequests);
                     break;
-
                 case 4: // Исполнитель
-                    int totalAssigned = ConnectObject.GetConnect().Requests.Count(r => r.workerID == _displayUser.userID);
-                    int completed = ConnectObject.GetConnect().Requests.Count(r => r.workerID == _displayUser.userID && r.requestStatusID == 5);
-                    int activeForExecutor = ConnectObject.GetConnect().Requests.Count(r => r.workerID == _displayUser.userID && r.requestStatusID >= 2 && r.requestStatusID <= 4);
-                    statText = string.Format(loc?["Statistics_Executor"] ?? "Всего заявок: {0}\nВыполнено: {1}\nАктивных: {2}", totalAssigned, completed, activeForExecutor);
+                    var executorStat = StatisticsHelper.GetExecutorStat(_displayUser, startDate, endDate);
+                    statText = string.Format(loc?["Statistics_Executor"] ?? "Total requests: {0}\nCompleted: {1}\nActive: {2}",
+                        executorStat.TotalRequests, executorStat.CompletedRequests, executorStat.InProgressRequests);
                     break;
-
-                default: // Администратор и другие
-                    statText = loc?["Statistics_Placeholder"] ?? "Статистика не определена";
+                case 3: // Менеджер
+                    int inProcess = StatisticsHelper.GetManagerStat(startDate, endDate);
+                    statText = string.Format(loc?["Statistics_Manager"] ?? "Requests in process: {0}", inProcess);
+                    break;
+                default:
+                    statText = loc?["Statistics_Placeholder"] ?? "No statistics";
                     break;
             }
 
             StatInfo.Text = statText;
+        }
+
+        private void Period_Changed(object sender, RoutedEventArgs e)
+        {
+            UpdateStatistics();
         }
 
         private void DeleteAvatar_Click(object sender, RoutedEventArgs e)

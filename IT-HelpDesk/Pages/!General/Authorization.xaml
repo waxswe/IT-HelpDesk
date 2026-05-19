@@ -16,14 +16,14 @@
                 <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Login_Label]}" HorizontalAlignment="Left" Margin="35,0,0,0"/>
                 <TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[RequiredField_Tooltip]}"/>
             </StackPanel>
-            <TextBox x:Name="TBLogin" Margin="0,0,0,10" FontSize="22" TabIndex="1" MaxLength="16"/>
+            <TextBox x:Name="TBLogin" Margin="0,0,0,10" FontSize="22" TabIndex="1" MaxLength="16" PreviewKeyDown="LoginPassword_PreviewKeyDown"/>
 
             <StackPanel Orientation="Horizontal">
                 <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Password_Label]}" HorizontalAlignment="Left" Margin="35,0,0,0"/>
                 <TextBlock Style="{StaticResource RequiredStar}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[RequiredField_Tooltip]}"/>
             </StackPanel>
             <DockPanel Height="50" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="40,0,0,10">
-                <PasswordBox x:Name="PBPassword" FontSize="22" TabIndex="2"/>
+                <PasswordBox x:Name="PBPassword" FontSize="22" TabIndex="2" PreviewKeyDown="LoginPassword_PreviewKeyDown"/>
                 <TextBlock x:Name="EyeIcon" Text="👁" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,10,0" Cursor="Hand" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Password_Tooltip]}" 
                            MouseEnter="EyeIcon_MouseEnter" MouseLeave="EyeIcon_MouseLeave" Grid.Column="2" Grid.Row="3"/>
             </DockPanel>

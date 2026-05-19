@@ -50,9 +50,8 @@ namespace IT_HelpDesk.Pages.Manager
             LoadStatistics();
         }
 
-        private async void LoadStatistics()
+        private void LoadStatistics()
         {
-            List<User> executors = ConnectObject.GetConnect().Users.Where(u => u.roleID == 4 && u.statusID == 1).ToList();
             DateTime now = DateTime.Now;
             DateTime startDate, endDate;
             switch (_currentPeriod)
@@ -71,44 +70,7 @@ namespace IT_HelpDesk.Pages.Manager
                     break;
             }
 
-            List<Request> allRequests = ConnectObject.GetConnect().Requests.Where(r => r.workerID != null && (r.requestStatusID >= 2 && r.requestStatusID <= 5 || r.requestStatusID == 7) &&
-                   (_currentPeriod == Period.AllTime || (r.createdAt >= startDate && r.createdAt <= endDate))).ToList();
-
-            List<Request> globalInProgress = allRequests.Where(r => r.requestStatusID >= 2 && r.requestStatusID <= 4).ToList();
-            int globalInProgressCount = globalInProgress.Count;
-
-            List<ExecutorStat> stats = new List<ExecutorStat>();
-            foreach (User executor in executors)
-            {
-                List<Request> requests = allRequests.Where(r => r.workerID == executor.userID).ToList();
-                int total = requests.Count;
-                int assigned = requests.Count(r => r.requestStatusID == 2);
-                int inProgress = requests.Count(r => r.requestStatusID == 3 || r.requestStatusID == 4);
-                int completed = requests.Count(r => r.requestStatusID == 5 || r.requestStatusID == 7);
-                double completionPercent = total == 0 ? 0 : (double)completed / total * 100;
-                double loadPercent = globalInProgressCount == 0 ? 0 : (double)(assigned + inProgress) / globalInProgressCount * 100;
-
-                LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
-                string profession = executor.professionID.HasValue ?
-                    (loc?.GetProfessionTranslation(executor.professionID.Value) ?? "—") : "—";
-                string fullName = (loc?.CurrentLanguage == "en" && loc != null) ? loc.Transliterate(executor.name) : executor.name;
-
-                stats.Add(new ExecutorStat
-                {
-                    UserID = executor.userID,
-                    FullName = fullName,
-                    Profession = profession,
-                    TotalRequests = total,
-                    AssignedRequests = assigned,
-                    InProgressRequests = inProgress,
-                    CompletedRequests = completed,
-                    CompletionPercent = completionPercent.ToString("F1") + "%",
-                    LoadPercent = loadPercent.ToString("F1") + "%"
-                });
-            }
-            _allStats = stats.OrderBy(s => s.FullName).ToList();
-            _sortColumn = "FullName";
-            _sortAscending = true;
+            _allStats = StatisticsHelper.GetExecutorStats(startDate, endDate);
             _currentPage = 1;
             ApplyFiltersAndPaging();
         }
