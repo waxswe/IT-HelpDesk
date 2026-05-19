@@ -8,6 +8,7 @@ namespace IT_HelpDesk.Data.Classes
 {
     public class ExecutorStat
     {
+        public int UserID { get; set; }
         public string FullName { get; set; }
         public string Profession { get; set; }
         public int TotalRequests { get; set; }

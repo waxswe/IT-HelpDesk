@@ -1,0 +1,58 @@
+﻿<Window x:Class="IT_HelpDesk.Pages.Manager.ExportOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IT_HelpDesk.Pages.Manager"
+        mc:Ignorable="d"
+       Title="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Options_Title]}" 
+        Height="300" Width="600" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Выбор формата -->
+        <TextBlock Grid.Row="0" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Format]}" FontWeight="Bold" Margin="0,0,0,5"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <RadioButton x:Name="RadioExcel" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Excel]}" GroupName="Format" IsChecked="True" Margin="0,0,15,0"/>
+            <RadioButton x:Name="RadioCsv" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Csv]}" GroupName="Format" Margin="0,0,0,0"/>
+        </StackPanel>
+
+        <!-- Выбор периода -->
+        <TextBlock Grid.Row="2" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Period]}" FontWeight="Bold" Margin="0,0,0,5"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10">
+            <RadioButton x:Name="PeriodCurrentMonth" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_CurrentMonth]}" 
+                         GroupName="Period" Margin="0,0,15,0" Checked="PresetPeriod_Checked"/>
+            <RadioButton x:Name="PeriodPreviousMonth" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_PreviousMonth]}" 
+                         GroupName="Period" Margin="0,0,15,0" Checked="PresetPeriod_Checked"/>
+            <RadioButton x:Name="PeriodAllTime" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_AllTime]}" 
+                         GroupName="Period" Margin="0,0,15,0" Checked="PresetPeriod_Checked"/>
+            <RadioButton x:Name="PeriodCustom" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Export_DateRange_Custom]}" 
+                         GroupName="Period" Margin="0,0,0,0" Checked="PresetPeriod_Checked"/>
+        </StackPanel>
+
+        <!-- Поля для произвольной даты -->
+        <Grid Grid.Row="4" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Export_From]}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <DatePicker x:Name="DateFrom" Grid.Column="1" IsEnabled="False"/>
+            <TextBlock Grid.Column="2" Text="{Binding Source={StaticResource LocalizationManager}, Path=[Export_To]}" VerticalAlignment="Center" Margin="10,0,10,0"/>
+            <DatePicker x:Name="DateTo" Grid.Column="3" IsEnabled="False"/>
+        </Grid>
+
+        <!-- Кнопка экспорта -->
+        <Button Grid.Row="5" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Generate]}" Width="120" Height="30" 
+                HorizontalAlignment="Center" Click="ExportButton_Click"/>
+    </Grid>
+</Window>

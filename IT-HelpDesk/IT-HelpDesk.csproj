@@ -214,6 +214,9 @@
     <Compile Include="Pages\Manager\ExecutorStatistics.xaml.cs">
       <DependentUpon>ExecutorStatistics.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Manager\ExportOptionsWindow.xaml.cs">
+      <DependentUpon>ExportOptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Manager\ManagerPage.xaml.cs">
       <DependentUpon>ManagerPage.xaml</DependentUpon>
     </Compile>
@@ -280,6 +283,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Manager\ExecutorStatistics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Manager\ExportOptionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

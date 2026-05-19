@@ -1,5 +1,6 @@
 ﻿using IT_HelpDesk.Data;
 using IT_HelpDesk.Data.Classes;
+using IT_HelpDesk.Pages._General;
 using Microsoft.Win32;
 using OfficeOpenXml;
 using System;
@@ -25,12 +26,14 @@ namespace IT_HelpDesk.Pages.Manager
     /// </summary>
     public partial class ExecutorStatistics : Page
     {
-        private enum Period { Month, Quarter, All }
-        private Period _currentPeriod = Period.Month;
+        private enum Period { CurrentMonth, PreviousMonth, AllTime }
+        private Period _currentPeriod = Period.CurrentMonth;
         private List<ExecutorStat> _allStats = new List<ExecutorStat>();
         private List<ExecutorStat> _currentStats = new List<ExecutorStat>();
         private int _currentPage = 1;
-        private const int PageSize = 10;
+        private const int PageSize = 8;
+        private string _sortColumn = "FullName";
+        private bool _sortAscending = true;
         public ExecutorStatistics()
         {
             InitializeComponent();
@@ -41,9 +44,9 @@ namespace IT_HelpDesk.Pages.Manager
 
         private void Period_Changed(object sender, RoutedEventArgs e)
         {
-            if (PeriodMonth.IsChecked == true) _currentPeriod = Period.Month;
-            else if (PeriodQuarter.IsChecked == true) _currentPeriod = Period.Quarter;
-            else _currentPeriod = Period.All;
+            if (PeriodCurrentMonth.IsChecked == true) _currentPeriod = Period.CurrentMonth;
+            else if (PeriodPreviousMonth.IsChecked == true) _currentPeriod = Period.PreviousMonth;
+            else _currentPeriod = Period.AllTime;
             LoadStatistics();
         }
 
@@ -51,38 +54,39 @@ namespace IT_HelpDesk.Pages.Manager
         {
             List<User> executors = ConnectObject.GetConnect().Users.Where(u => u.roleID == 4 && u.statusID == 1).ToList();
             DateTime now = DateTime.Now;
-            DateTime startDate;
+            DateTime startDate, endDate;
             switch (_currentPeriod)
             {
-                case Period.Month:
+                case Period.CurrentMonth:
                     startDate = new DateTime(now.Year, now.Month, 1);
+                    endDate = startDate.AddMonths(1).AddDays(-1);
                     break;
-                case Period.Quarter:
-                    int quarterStartMonth = (now.Month - 1) / 3 * 3 + 1;
-                    startDate = new DateTime(now.Year, quarterStartMonth, 1);
+                case Period.PreviousMonth:
+                    startDate = new DateTime(now.Year, now.Month, 1).AddMonths(-1);
+                    endDate = startDate.AddMonths(1).AddDays(-1);
                     break;
                 default:
                     startDate = DateTime.MinValue;
+                    endDate = DateTime.MaxValue;
                     break;
             }
-            if (_currentPeriod == Period.Quarter && startDate < new DateTime(2020, 1, 1))
-                startDate = new DateTime(2020, 1, 1);
 
-            var allAssignedInProgress = ConnectObject.GetConnect().Requests.Where(r => r.workerID != null && (r.requestStatusID == 2 || r.requestStatusID == 3 || r.requestStatusID == 4) && 
-                            (_currentPeriod == Period.All || (r.createdAt >= startDate && r.createdAt <= now))).Select(r => r.workerID).GroupBy(w => w).Select(g => new { WorkerID = g.Key, Count = g.Count() }).ToList();
-            int totalAssignedInProgressAll = allAssignedInProgress.Sum(x => x.Count);
+            List<Request> allRequests = ConnectObject.GetConnect().Requests.Where(r => r.workerID != null && (r.requestStatusID >= 2 && r.requestStatusID <= 5 || r.requestStatusID == 7) &&
+                   (_currentPeriod == Period.AllTime || (r.createdAt >= startDate && r.createdAt <= endDate))).ToList();
+
+            List<Request> globalInProgress = allRequests.Where(r => r.requestStatusID >= 2 && r.requestStatusID <= 4).ToList();
+            int globalInProgressCount = globalInProgress.Count;
 
             List<ExecutorStat> stats = new List<ExecutorStat>();
             foreach (User executor in executors)
             {
-                List<Request> requests = ConnectObject.GetConnect().Requests.Where(r => r.workerID == executor.userID && (_currentPeriod == Period.All || (r.createdAt >= startDate && r.createdAt <= now))).ToList();
-
-                int total = requests.Count(r => r.requestStatusID != 6);
+                List<Request> requests = allRequests.Where(r => r.workerID == executor.userID).ToList();
+                int total = requests.Count;
                 int assigned = requests.Count(r => r.requestStatusID == 2);
                 int inProgress = requests.Count(r => r.requestStatusID == 3 || r.requestStatusID == 4);
                 int completed = requests.Count(r => r.requestStatusID == 5 || r.requestStatusID == 7);
                 double completionPercent = total == 0 ? 0 : (double)completed / total * 100;
-                double loadPercent = totalAssignedInProgressAll == 0 ? 0 : (double)(assigned + inProgress) / totalAssignedInProgressAll * 100;
+                double loadPercent = globalInProgressCount == 0 ? 0 : (double)(assigned + inProgress) / globalInProgressCount * 100;
 
                 LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
                 string profession = executor.professionID.HasValue ?
@@ -91,6 +95,7 @@ namespace IT_HelpDesk.Pages.Manager
 
                 stats.Add(new ExecutorStat
                 {
+                    UserID = executor.userID,
                     FullName = fullName,
                     Profession = profession,
                     TotalRequests = total,
@@ -102,6 +107,8 @@ namespace IT_HelpDesk.Pages.Manager
                 });
             }
             _allStats = stats.OrderBy(s => s.FullName).ToList();
+            _sortColumn = "FullName";
+            _sortAscending = true;
             _currentPage = 1;
             ApplyFiltersAndPaging();
         }
@@ -110,6 +117,64 @@ namespace IT_HelpDesk.Pages.Manager
         {
             _currentStats = _allStats.ToList();
             UpdatePage();
+        }
+
+        private void SortStats()
+        {
+            if (_allStats == null || _allStats.Count == 0) return;
+
+            Func<ExecutorStat, IComparable> keySelector;
+            switch (_sortColumn)
+            {
+                case "FullName":
+                    keySelector = s => s.FullName;
+                    break;
+                case "Profession":
+                    keySelector = s => s.Profession;
+                    break;
+                case "TotalRequests":
+                    keySelector = s => s.TotalRequests;
+                    break;
+                case "AssignedRequests":
+                    keySelector = s => s.AssignedRequests;
+                    break;
+                case "InProgressRequests":
+                    keySelector = s => s.InProgressRequests;
+                    break;
+                case "CompletedRequests":
+                    keySelector = s => s.CompletedRequests;
+                    break;
+                case "CompletionPercent":
+                    keySelector = s => double.Parse(s.CompletionPercent.TrimEnd('%'));
+                    break;
+                case "LoadPercent":
+                    keySelector = s => double.Parse(s.LoadPercent.TrimEnd('%'));
+                    break;
+                default:
+                    keySelector = s => s.FullName;
+                    break;
+            }
+
+            if (_sortAscending)
+                _allStats = _allStats.OrderBy(keySelector).ToList();
+            else
+                _allStats = _allStats.OrderByDescending(keySelector).ToList();
+        }
+
+        private void Header_Click(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock tb = sender as TextBlock;
+            string column = tb.Tag.ToString();
+            if (_sortColumn == column)
+                _sortAscending = !_sortAscending;
+            else
+            {
+                _sortColumn = column;
+                _sortAscending = true;
+            }
+            SortStats();
+            _currentPage = 1;
+            ApplyFiltersAndPaging();
         }
 
         private void UpdatePage()
@@ -192,190 +257,9 @@ namespace IT_HelpDesk.Pages.Manager
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            ExportButton.ContextMenu.IsOpen = true;
-        }
-
-        private void ExportExcel_Click(object sender, RoutedEventArgs e)
-        {
-            ExportToExcel();
-        }
-
-        private async void ExportToExcel()
-        {
-            try
-            {
-                Period[] periods = new[] { Period.Month, Period.Quarter, Period.All };
-                Dictionary<Period, List<ExecutorStat>> dataSets = new Dictionary<Period, List<ExecutorStat>>();
-                Period originalPeriod = _currentPeriod;
-                foreach (Period period in periods)
-                {
-                    _currentPeriod = period;
-                    LoadStatistics();
-                    dataSets[period] = _currentStats.ToList();
-                }
-                _currentPeriod = originalPeriod;
-                LoadStatistics();
-
-                ExcelPackage.License.SetNonCommercialPersonal("Роман");
-                using (ExcelPackage package = new ExcelPackage())
-                {
-                    foreach (Period period in periods)
-                    {
-                        string sheetName;
-                        switch (period)
-                        {
-                            case Period.Month:
-                                sheetName = GetLoc("ExecutorStatistics_Period_Month");
-                                break;
-                            case Period.Quarter:
-                                sheetName = GetLoc("ExecutorStatistics_Period_Quarter");
-                                break;
-                            default:
-                                sheetName = GetLoc("ExecutorStatistics_Period_All");
-                                break;
-                        }
-                        ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(sheetName);
-                        List<ExecutorStat> data = dataSets[period];
-                        if (data.Any())
-                        {
-                            worksheet.Cells[1, 1].Value = GetLoc("ExecutorStatistics_Column_FullName");
-                            worksheet.Cells[1, 2].Value = GetLoc("ExecutorStatistics_Column_Profession");
-                            worksheet.Cells[1, 3].Value = GetLoc("ExecutorStatistics_Column_Total");
-                            worksheet.Cells[1, 4].Value = GetLoc("ExecutorStatistics_Column_Assigned");
-                            worksheet.Cells[1, 5].Value = GetLoc("ExecutorStatistics_Column_InProgress");
-                            worksheet.Cells[1, 6].Value = GetLoc("ExecutorStatistics_Column_Completed");
-                            worksheet.Cells[1, 7].Value = GetLoc("ExecutorStatistics_Column_CompletionPercent");
-                            worksheet.Cells[1, 8].Value = GetLoc("ExecutorStatistics_Column_LoadPercent");
-
-                            for (int i = 0; i < data.Count; i++)
-                            {
-                                ExecutorStat row = data[i];
-                                worksheet.Cells[i + 2, 1].Value = row.FullName;
-                                worksheet.Cells[i + 2, 2].Value = row.Profession;
-                                worksheet.Cells[i + 2, 3].Value = row.TotalRequests;
-                                worksheet.Cells[i + 2, 4].Value = row.AssignedRequests; 
-                                worksheet.Cells[i + 2, 5].Value = row.InProgressRequests;
-                                worksheet.Cells[i + 2, 6].Value = row.CompletedRequests;
-                                worksheet.Cells[i + 2, 7].Value = row.CompletionPercent;
-                                worksheet.Cells[i + 2, 8].Value = row.LoadPercent;
-                            }
-                            worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-                        }
-                        else
-                        {
-                            worksheet.Cells[1, 1].Value = GetLoc("NoData");
-                        }
-                    }
-
-                    SaveFileDialog saveDialog = new SaveFileDialog
-                    {
-                        Filter = "Excel files (*.xlsx)|*.xlsx",
-                        DefaultExt = "xlsx",
-                        FileName = $"Статистика_Исполнителей_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
-                    };
-                    if (saveDialog.ShowDialog() == true)
-                    {
-                        FileInfo fi = new FileInfo(saveDialog.FileName);
-                        await package.SaveAsAsync(fi);
-                        MessageBox.Show(GetLoc("ExecutorStatistics_ExportSuccess"), GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(string.Format(GetLoc("ExecutorStatistics_ExportError"), ex.Message), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ExportCsv_Click(object sender, RoutedEventArgs e)
-        {
-            ExportToCsv();
-        }
-
-        private void ExportToCsv()
-        {
-            try
-            {
-                Period[] periods = new[] { Period.Month, Period.Quarter, Period.All };
-                Dictionary<Period, List<ExecutorStat>> dataSets = new Dictionary<Period, List<ExecutorStat>>();
-                Period originalPeriod = _currentPeriod;
-
-                foreach (Period period in periods)
-                {
-                    _currentPeriod = period;
-                    LoadStatistics();
-                    dataSets[period] = _allStats.ToList();
-                }
-
-                _currentPeriod = originalPeriod;
-                LoadStatistics();
-
-                SaveFileDialog saveDialog = new SaveFileDialog
-                {
-                    Filter = "CSV files (*.csv)|*.csv",
-                    DefaultExt = "csv",
-                    FileName = $"Статистика_Исполнителей_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
-                };
-
-                if (saveDialog.ShowDialog() == true)
-                {
-                    using (StreamWriter writer = new StreamWriter(saveDialog.FileName, false, Encoding.UTF8))
-                    {
-                        foreach (Period period in periods)
-                        {
-                            string title;
-                            switch (period)
-                            {
-                                case Period.Month:
-                                    title = GetLoc("ExecutorStatistics_Period_Month");
-                                    break;
-                                case Period.Quarter:
-                                    title = GetLoc("ExecutorStatistics_Period_Quarter");
-                                    break;
-                                default:
-                                    title = GetLoc("ExecutorStatistics_Period_All");
-                                    break;
-                            }
-                            writer.WriteLine($"--- {title} ---");
-
-                            // Заголовки
-                            string[] headers = {
-                                GetLoc("ExecutorStatistics_Column_FullName"),
-                                GetLoc("ExecutorStatistics_Column_Profession"),
-                                GetLoc("ExecutorStatistics_Column_Total"),
-                                GetLoc("ExecutorStatistics_Column_Assigned"),
-                                GetLoc("ExecutorStatistics_Column_InProgress"),
-                                GetLoc("ExecutorStatistics_Column_Completed"),
-                                GetLoc("ExecutorStatistics_Column_CompletionPercent"),
-                                GetLoc("ExecutorStatistics_Column_LoadPercent")
-                            };
-                            writer.WriteLine(string.Join(";", headers));
-
-                            // Данные
-                            foreach (var stat in dataSets[period])
-                            {
-                                string[] row = {
-                                    stat.FullName,
-                                    stat.Profession,
-                                    stat.TotalRequests.ToString(),
-                                    stat.AssignedRequests.ToString(),
-                                    stat.InProgressRequests.ToString(),
-                                    stat.CompletedRequests.ToString(),
-                                    stat.CompletionPercent,
-                                    stat.LoadPercent
-                                };
-                                writer.WriteLine(string.Join(";", row));
-                            }
-                            writer.WriteLine();
-                        }
-                    }
-                    MessageBox.Show(GetLoc("ExecutorStatistics_ExportSuccess"), GetLoc("Success_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(string.Format(GetLoc("ExecutorStatistics_ExportError"), ex.Message), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            ExportOptionsWindow exportWindow = new ExportOptionsWindow(_allStats);
+            exportWindow.Owner = Window.GetWindow(this);
+            exportWindow.ShowDialog();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -387,6 +271,20 @@ namespace IT_HelpDesk.Pages.Manager
         {
             LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
             return loc?[key] ?? key;
+        }
+
+        private void OpenUserProfile(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock textBlock = sender as TextBlock;
+            int? userId = textBlock?.Tag as int?;
+            if (!userId.HasValue) return;
+
+            User user = ConnectObject.GetConnect().Users.Find(userId.Value);
+            if (user == null) return;
+
+            UserProfile profileWindow = new UserProfile(user);
+            profileWindow.Owner = Window.GetWindow(this);
+            profileWindow.ShowDialog();
         }
     }
 }

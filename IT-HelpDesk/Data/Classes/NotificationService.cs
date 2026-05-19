@@ -72,7 +72,7 @@ namespace IT_HelpDesk.Data.Classes
                                 login = user.login;
 
                         }
-                        string template = loc["Notification_UserBlocked_ToAdmin"] ?? "Пользователь {0} был заблокирован...";
+                        string template = loc["Notification_UserBlocked_ToAdmin"] ?? "Пользователь {0} был заблокирован из-за превышения числа попыток входа.";
                         item.Message = string.Format(template, login);
                     }
                 }

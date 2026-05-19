@@ -42,7 +42,7 @@ namespace IT_HelpDesk.Pages._General
             if (loc != null)
                 loc.LanguageChanged += (s, e) => LoadUserData();
 
-            this.Title = $"Профиль пользователя {user.login}";
+            this.Title = string.Format(loc["User_Profile"], _displayUser.login);
         }
 
         private void LoadUserData()

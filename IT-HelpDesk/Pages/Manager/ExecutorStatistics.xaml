@@ -22,35 +22,43 @@
 
             <!-- Выбор периода -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,50,0,0" VerticalAlignment="Top">
-                <RadioButton x:Name="PeriodMonth" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Period_Month]}" 
-                             GroupName="Period" Margin="15,0" VerticalAlignment="Center" IsChecked="True" Checked="Period_Changed"/>
-                <RadioButton x:Name="PeriodQuarter" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Period_Quarter]}" 
-                             GroupName="Period" Margin="15,0" VerticalAlignment="Center" IsChecked="False" Checked="Period_Changed"/>
-                <RadioButton x:Name="PeriodAll" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Period_All]}" 
-                             GroupName="Period" Margin="15,0" VerticalAlignment="Center" IsChecked="False" Checked="Period_Changed"/>
+                <RadioButton x:Name="PeriodCurrentMonth" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_CurrentMonth]}" 
+                 GroupName="Period" Margin="15,0" VerticalAlignment="Center" IsChecked="True" Checked="Period_Changed"/>
+                <RadioButton x:Name="PeriodPreviousMonth" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_PreviousMonth]}" 
+                 GroupName="Period" Margin="15,0" VerticalAlignment="Center" IsChecked="False" Checked="Period_Changed"/>
+                <RadioButton x:Name="PeriodAllTime" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorReport_Period_AllTime]}" 
+                 GroupName="Period" Margin="15,0" VerticalAlignment="Center" IsChecked="False" Checked="Period_Changed"/>
             </StackPanel>
 
             <!-- Заголовки таблицы -->
             <Border Background="Transparent" Padding="0,0,0,5" Margin="30,90,0,0">
-                <Grid HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch" Cursor="Hand">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="130"/>
-                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="85"/>
                         <ColumnDefinition Width="85"/>
                         <ColumnDefinition Width="85"/>
                         <ColumnDefinition Width="85"/>
-                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="110"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_FullName]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_FullName]}" FontWeight="Bold" Foreground="Black"/>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Profession]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_Profession]}" FontWeight="Bold" Foreground="Black" Grid.Column="1"/>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Total]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_TotalRequests]}" FontWeight="Bold" Foreground="Black" Grid.Column="2" TextAlignment="Center"/>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Assigned]}" ToolTip="Заявки со статусом 'Назначена'" FontWeight="Bold" Foreground="Black" Grid.Column="3" TextAlignment="Center"/>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_InProgress]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_InProgress]}" FontWeight="Bold" Foreground="Black" Grid.Column="4" TextAlignment="Center"/>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Completed]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_Completed]}" FontWeight="Bold" Foreground="Black" Grid.Column="5" TextAlignment="Center"/>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_CompletionPercent]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_CompletionPercent]}" FontWeight="Bold" Foreground="Black" Grid.Column="6" TextAlignment="Center"/>
-                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_LoadPercent]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_LoadPercent]}" FontWeight="Bold" Foreground="Black" Grid.Column="7" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_FullName]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_FullName]}" 
+                               FontWeight="Bold" Foreground="Black" MouseLeftButtonUp="Header_Click" Tag="FullName"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Profession]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_Profession]}" 
+                               FontWeight="Bold" Foreground="Black" Grid.Column="1" MouseLeftButtonUp="Header_Click" Tag="Profession"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Total]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_TotalRequests]}" 
+                               FontWeight="Bold" Foreground="Black" Grid.Column="2" TextAlignment="Center" MouseLeftButtonUp="Header_Click" Tag="TotalRequests"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Assigned]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_Assigned]}" 
+                               FontWeight="Bold" Foreground="Black" Grid.Column="3" TextAlignment="Center" MouseLeftButtonUp="Header_Click" Tag="AssignedRequests"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_InProgress]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_InProgress]}" 
+                               FontWeight="Bold" Foreground="Black" Grid.Column="4" TextAlignment="Center" MouseLeftButtonUp="Header_Click" Tag="InProgressRequests"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_Completed]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_Completed]}" 
+                               FontWeight="Bold" Foreground="Black" Grid.Column="5" TextAlignment="Center" MouseLeftButtonUp="Header_Click" Tag="CompletedRequests"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_CompletionPercent]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_CompletionPercent]}" 
+                               FontWeight="Bold" Foreground="Black" Grid.Column="6" TextAlignment="Center" MouseLeftButtonUp="Header_Click" Tag="CompletionPercent"/>
+                    <TextBlock Text="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_Column_LoadPercent]}" ToolTip="{Binding Source={StaticResource LocalizationManager}, Path=[Tooltip_LoadPercent]}" 
+                               FontWeight="Bold" Foreground="Black" Grid.Column="7" TextAlignment="Center" MouseLeftButtonUp="Header_Click" Tag="LoadPercent"/>
                 </Grid>
             </Border>
 
@@ -62,16 +70,16 @@
                             <Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Margin="0,0,0,5" Padding="0,5,0,5">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="130"/>
-                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="85"/>
                                         <ColumnDefinition Width="85"/>
                                         <ColumnDefinition Width="85"/>
                                         <ColumnDefinition Width="85"/>
-                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="100"/>
                                         <ColumnDefinition Width="110"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding FullName}" Foreground="White" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding FullName}" Foreground="White" Grid.Column="0" Cursor="Hand" MouseLeftButtonUp="OpenUserProfile" Tag="{Binding UserID}"/>
                                     <TextBlock Text="{Binding Profession}" Foreground="White" Grid.Column="1"/>
                                     <TextBlock Text="{Binding TotalRequests}" Foreground="White" Grid.Column="2" TextAlignment="Center"/>
                                     <TextBlock Text="{Binding AssignedRequests}" Foreground="White" Grid.Column="3" TextAlignment="Center"/>
@@ -103,14 +111,7 @@
 
         <!-- Кнопки -->
         <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="ExportButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_ExportButton]}" Margin="10" Click="ExportButton_Click">
-                <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Excel]}" Click="ExportExcel_Click"/>
-                        <MenuItem Header="{Binding Source={StaticResource LocalizationManager}, Path=[Export_Csv]}" Click="ExportCsv_Click"/>
-                    </ContextMenu>
-                </Button.ContextMenu>
-            </Button>
+            <Button x:Name="ExportButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[ExecutorStatistics_ExportButton]}" Margin="10" Click="ExportButton_Click"/>
             <Button x:Name="BackButton" Content="{Binding Source={StaticResource LocalizationManager}, Path=[Back_Button]}" Click="BackButton_Click"/>
         </StackPanel>
     </Grid>
