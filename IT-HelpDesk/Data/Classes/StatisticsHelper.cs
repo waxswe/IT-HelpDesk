@@ -53,7 +53,7 @@ namespace IT_HelpDesk.Data.Classes
             int globalAssignedInProgress = allRequests.Count(r => r.requestStatusID == 2 || r.requestStatusID == 3 || r.requestStatusID == 4);
 
             List<ExecutorStat> stats = new List<ExecutorStat>();
-            foreach (var executor in executors)
+            foreach (User executor in executors)
             {
                 List<Request> requests = allRequests.Where(r => r.workerID == executor.userID).ToList();
                 int total = requests.Count;

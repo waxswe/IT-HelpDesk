@@ -157,7 +157,7 @@ namespace IT_HelpDesk.Pages.Manager
             try
             {
                 ExcelPackage.License.SetNonCommercialPersonal("YourName");
-                using (var package = new ExcelPackage())
+                using (ExcelPackage package = new ExcelPackage())
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Report");
                     // Заголовок с периодом
@@ -232,7 +232,7 @@ namespace IT_HelpDesk.Pages.Manager
                             GetLoc("ExecutorStatistics_Column_CompletionPercent"),
                             GetLoc("ExecutorStatistics_Column_LoadPercent")
                         }));
-                        foreach (var row in data)
+                        foreach (ExecutorStat row in data)
                         {
                             writer.WriteLine(string.Join(";", new[] {
                                 row.FullName,

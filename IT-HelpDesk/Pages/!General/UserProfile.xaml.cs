@@ -259,12 +259,12 @@ namespace IT_HelpDesk.Pages._General
             switch (_displayUser.roleID)
             {
                 case 2: // Клиент
-                    var clientStat = StatisticsHelper.GetClientStat(_displayUser, startDate, endDate);
+                    ClientStat clientStat = StatisticsHelper.GetClientStat(_displayUser, startDate, endDate);
                     statText = string.Format(loc?["Statistics_Client"] ?? "Total requests: {0}\nActive requests: {1}",
                         clientStat.TotalRequests, clientStat.ActiveRequests);
                     break;
                 case 4: // Исполнитель
-                    var executorStat = StatisticsHelper.GetExecutorStat(_displayUser, startDate, endDate);
+                    ExecutorStat executorStat = StatisticsHelper.GetExecutorStat(_displayUser, startDate, endDate);
                     statText = string.Format(loc?["Statistics_Executor"] ?? "Total requests: {0}\nCompleted: {1}\nActive: {2}",
                         executorStat.TotalRequests, executorStat.CompletedRequests, executorStat.InProgressRequests);
                     break;
