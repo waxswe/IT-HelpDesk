@@ -123,7 +123,7 @@ namespace IT_HelpDesk.Pages.Administrator
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             string login = TBLogin.Text?.Trim();
-            if (string.IsNullOrWhiteSpace(login) /*|| !IsValidLogin(login)*/)
+            if (string.IsNullOrWhiteSpace(login) || !IsValidLogin(login))
             {
                 MessageBox.Show(GetLoc("Error_InvalidLogin"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 TBLogin.Focus();
@@ -144,7 +144,8 @@ namespace IT_HelpDesk.Pages.Administrator
                 PBPassword.Focus();
                 return;
             }
-            if (string.IsNullOrEmpty(password) /*|| !IsValidPassword(password)*/)
+
+            if (!string.IsNullOrEmpty(password) || !IsValidPassword(password))
             {
                 MessageBox.Show(GetLoc("Error_InvalidPassword"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 PBPassword.Focus();
