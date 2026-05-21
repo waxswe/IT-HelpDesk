@@ -30,6 +30,17 @@
     "Forget_Password_Messagebox": "Please contact the administrator at administrator@it.nn to restore your account.",
     "Forget_Password_Messagebox_Title": "Forgot your password",
     "RequiredField_Tooltip": "This field is required",
+    // Change password window
+    "SetPassword_Title": "Set Password",
+    "SetPassword_Instruction": "A new password must be set for your account.",
+    "SetPassword_NewPasswordLabel": "New password:",
+    "SetPassword_ConfirmLabel": "Confirm:",
+    "SetPassword_SaveButton": "Save",
+    "SetPassword_ExitButton": "Exit",
+    "SetPassword_EmptyError": "Password cannot be empty.",
+    "SetPassword_MismatchError": "Passwords do not match.",
+    "SetPassword_Success": "Password set successfully.",
+    "SetPassword_SaveError": "Error saving password: {0}",
     // User control elements
     "Tooltip_Notifications": "Here are all your notifications",
     "Tooltip_Logout": "Click to log out of your account",

@@ -30,6 +30,17 @@
     "Forget_Password_Messagebox": "Свяжитесь с администратором по почте Administrator@it.nn с почты, привязанной к вашему аккаунту.",
     "Forget_Password_Messagebox_Title": "Забыли пароль",
     "RequiredField_Tooltip": "Это поле обязательно для заполнения",
+    // Окно изменения пароля
+    "SetPassword_Title": "Установка пароля",
+    "SetPassword_Instruction": "Для вашей учетной записи необходимо установить новый пароль.",
+    "SetPassword_NewPasswordLabel": "Новый пароль:",
+    "SetPassword_ConfirmLabel": "Подтверждение:",
+    "SetPassword_SaveButton": "Сохранить",
+    "SetPassword_ExitButton": "Выйти",
+    "SetPassword_EmptyError": "Пароль не может быть пустым.",
+    "SetPassword_MismatchError": "Пароли не совпадают.",
+    "SetPassword_Success": "Пароль успешно установлен.",
+    "SetPassword_SaveError": "Ошибка при сохранении пароля: {0}",
     // Панель управления
     "Tooltip_Notifications": "Здесь все ваши уведомления",
     "Tooltip_Logout": "Нажмите для выхода из аккаунта",

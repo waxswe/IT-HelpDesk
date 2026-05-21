@@ -27,7 +27,9 @@ namespace IT_HelpDesk.Data
     
         public virtual DbSet<CommentEvent> CommentEvents { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationStatus> NotificationStatuses { get; set; }
+        public virtual DbSet<NotificationTemplate> NotificationTemplates { get; set; }
         public virtual DbSet<Profession> Professions { get; set; }
         public virtual DbSet<RequestCategory> RequestCategories { get; set; }
         public virtual DbSet<Request> Requests { get; set; }
@@ -35,9 +37,7 @@ namespace IT_HelpDesk.Data
         public virtual DbSet<RequestStatus> RequestStatuses { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Notification> Notifications { get; set; }
-        public virtual DbSet<NotificationTemplate> NotificationTemplates { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

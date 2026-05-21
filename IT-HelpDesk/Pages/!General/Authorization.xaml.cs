@@ -4,6 +4,7 @@ using IT_HelpDesk.Pages.Administrator;
 using IT_HelpDesk.Pages.Client;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -90,6 +91,17 @@ namespace IT_HelpDesk.Pages._General
                 return;
             }
 
+            if (user.isNew)
+            {
+                SetPasswordWindow setPassWindow = new SetPasswordWindow(user);
+                setPassWindow.ShowDialog();
+
+                if (!setPassWindow.PasswordSetSuccessfully)
+                {
+                    return;
+                }
+            }
+
             string hashedInputPassword = AuthService.ComputeSha256Hash(PBPassword.Password);
             if (user.password == hashedInputPassword)
             {
@@ -142,6 +154,7 @@ namespace IT_HelpDesk.Pages._General
                         MessageBox.Show(GetLoc("Error_UnknownRole"), GetLoc("Error_UnknownTitle"), MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                 }
+
                 return;
             }
             else

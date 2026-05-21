@@ -179,9 +179,9 @@ namespace IT_HelpDesk.Pages.Administrator
                 return;
             }
 
-            _tempUser.avatarURL = "/Data/Images/avatar.jpg";
-            _tempUser.createdAt = DateTime.Now;
             _tempUser.mistakeCount = 0;
+            _tempUser.email = email;
+            
 
             if ((int)CBRole.SelectedValue == 4)
             {
@@ -202,6 +202,10 @@ namespace IT_HelpDesk.Pages.Administrator
             {
                 _tempUser.plainPassword = PBPassword.Password;
                 _tempUser.password = AuthService.ComputeSha256Hash(PBPassword.Password);
+                _tempUser.createdAt = DateTime.Now;
+                _tempUser.isNew = true;
+                _tempUser.avatarURL = "/Data/Images/avatar.jpg";
+
                 if (ConnectObject.connect.Users.Count(x => x.login == TBLogin.Text) > 0)
                 {
                     MessageBox.Show(GetLoc("Error_LoginExists"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);

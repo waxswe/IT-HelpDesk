@@ -5,20 +5,28 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="404cec36b70040d5ae8aeb726c79572f" Name="Diagram1" ZoomLevel="55">
-        <EntityTypeShape EntityType="ITHelpDeskModel.CommentEvent" Width="1.5" PointX="5.25" PointY="2.375" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.Comment" Width="1.5" PointX="7.5" PointY="6" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.NotificationStatus" Width="1.5" PointX="8.25" PointY="2.75" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.Profession" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.RequestCategory" Width="1.5" PointX="3" PointY="12.875" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.Request" Width="1.5" PointX="5.25" PointY="5.5" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.RequestSection" Width="1.5" PointX="0.75" PointY="13" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.RequestStatus" Width="1.5" PointX="3" PointY="2.5" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.Role" Width="1.5" PointX="0.75" PointY="6.875" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.Status" Width="1.5" PointX="0.75" PointY="10" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.User" Width="1.5" PointX="3" PointY="5" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.CommentEvent" Width="1.5" PointX="8.25" PointY="3.625" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.Comment" Width="1.5" PointX="10.5" PointY="6.25" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.Notification" Width="1.5" PointX="7.5" PointY="6" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.NotificationStatus" Width="1.5" PointX="5.25" PointY="2.875" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.NotificationTemplate" Width="1.5" PointX="5.25" PointY="11.25" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.Profession" Width="1.5" PointX="0.75" PointY="4" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.RequestCategory" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.Request" Width="1.5" PointX="5.25" PointY="5.75" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.RequestSection" Width="1.5" PointX="0.75" PointY="1" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.RequestStatus" Width="1.5" PointX="3" PointY="11.5" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.Role" Width="1.5" PointX="0.75" PointY="7.125" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.Status" Width="1.5" PointX="0.75" PointY="10.25" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.sysdiagram" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ITHelpDeskModel.User" Width="1.5" PointX="3" PointY="5.25" />
         <AssociationConnector Association="ITHelpDeskModel.FK__Comments__eventI__619B8048" />
         <AssociationConnector Association="ITHelpDeskModel.FK__Comments__reques__5EBF139D" />
         <AssociationConnector Association="ITHelpDeskModel.FK__Comments__userID__5FB337D6" />
+        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4" />
+        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__notif__6B24EA82" />
+        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__reque__6E01572D" />
+        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__templ__6C190EBB" />
+        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__userI__6A30C649" />
         <AssociationConnector Association="ITHelpDeskModel.FK__Users__professio__440B1D61" />
         <AssociationConnector Association="ITHelpDeskModel.FK__RequestCa__reque__4E88ABD4" />
         <AssociationConnector Association="ITHelpDeskModel.FK__Requests__reques__571DF1D5" />
@@ -28,14 +36,6 @@
         <AssociationConnector Association="ITHelpDeskModel.FK__Requests__worker__5812160E" />
         <AssociationConnector Association="ITHelpDeskModel.FK__Users__roleID__4222D4EF" />
         <AssociationConnector Association="ITHelpDeskModel.FK__Users__statusID__4316F928" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.Notification" Width="1.5" PointX="10.5" PointY="4.625" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.NotificationTemplate" Width="1.5" PointX="8.25" PointY="10.625" />
-        <EntityTypeShape EntityType="ITHelpDeskModel.sysdiagram" Width="1.5" PointX="10.375" PointY="0.75" />
-        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__initi__6D0D32F4" />
-        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__notif__6B24EA82" />
-        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__reque__6E01572D" />
-        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__templ__6C190EBB" />
-        <AssociationConnector Association="ITHelpDeskModel.FK__Notificat__userI__6A30C649" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

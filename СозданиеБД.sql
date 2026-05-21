@@ -36,7 +36,8 @@ CREATE TABLE Users (
 	email NVARCHAR(64),
 	phone NVARCHAR(16),
 	mistakeCount INT CHECK (mistakeCount >= 0) DEFAULT 0,
-	plainPassword NVARCHAR(255)
+	plainPassword NVARCHAR(255),
+	isNew BIT DEFAULT 0
 );
 
 -- Справочник разделов заявок
@@ -193,7 +194,7 @@ INSERT INTO NotificationTemplates (templateKey, template) VALUES
 	('Notification_Completed_ToClient', 'Ваша заявка #{0} выполнена'),
 	('Notification_Closed_ToManager', 'Клиент закрыл заявку #{0}'),
 	('Notification_UserBlocked_ToAdmin', 'Пользователь {0} был заблокирован из-за превышения числа попыток входа'),
-	('Notification_StatusChanged', 'Статус заявки #{0} был изменён на '''{1}'''.'),
+	('Notification_StatusChanged', 'Статус заявки #{0} был изменён на ''{1}''.'),
 	('Notification_ExecutorRemoved', 'Ваше назначение в заявке #{0} отменено'),
 	('Notification_NeedManager_ToManager', 'В заявке #{0} требуется вмешательство менеджера'),
 	('MassMailing_Notification', 'Массовая рассылка: {0}'),

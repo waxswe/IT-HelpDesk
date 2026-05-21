@@ -288,7 +288,7 @@ namespace IT_HelpDesk.Data.Classes
             if (string.IsNullOrEmpty(russianText)) return russianText;
             string ru = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
             string[] en = new[] { "a", "b", "v", "g", "d", "e", "yo", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "kh", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya" };
-            StringBuilder result = new System.Text.StringBuilder();
+            StringBuilder result = new StringBuilder();
             foreach (char c in russianText.ToLower())
             {
                 int index = ru.IndexOf(c);
