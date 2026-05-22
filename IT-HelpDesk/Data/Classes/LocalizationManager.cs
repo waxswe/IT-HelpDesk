@@ -155,15 +155,13 @@ namespace IT_HelpDesk.Data.Classes
             {
                 switch (professionID)
                 {
-                    case 1: return "Сантехник";
-                    case 2: return "Электрик";
-                    case 3: return "Уборщик";
-                    case 4: return "Слесарь";
-                    case 5: return "Системный администратор";
-                    case 6: return "Специалист по ремонту ПК";
-                    case 7: return "Сетевой инженер";
-                    case 8: return "Специалист по программному обеспечению";
-                    case 9: return "Специалист общего профиля";
+                    case 1: return "Специалист АХО";
+                    case 2: return "Электромонтёр / Энергетик";
+                    case 3: return "Менеджер по закупкам и снабжению";
+                    case 4: return "Системный администратор";
+                    case 5: return "Инженер технической поддержки";
+                    case 6: return "Сетевой инженер";
+                    case 7: return "Руководитель IT-отдела";
                     default: return "—";
                 }
             }
@@ -171,15 +169,13 @@ namespace IT_HelpDesk.Data.Classes
             {
                 switch (professionID)
                 {
-                    case 1: return "Plumber";
-                    case 2: return "Electrician";
-                    case 3: return "Cleaner";
-                    case 4: return "Locksmith";
-                    case 5: return "System administrator";
-                    case 6: return "PC repair specialist";
-                    case 7: return "Network engineer";
-                    case 8: return "Software specialist";
-                    case 9: return "General specialist";
+                    case 1: return "Facilities Specialist";
+                    case 2: return "Electrician / Power Engineer";
+                    case 3: return "Procurement & Supply Manager";
+                    case 4: return "System Administrator";
+                    case 5: return "Technical Support Engineer";
+                    case 6: return "Network Engineer";
+                    case 7: return "IT Department Head";
                     default: return "—";
                 }
             }
@@ -247,18 +243,26 @@ namespace IT_HelpDesk.Data.Classes
             {
                 switch (categoryID)
                 {
-                    case 1: return "Ремонт помещения";
-                    case 2: return "Техническое обслуживание";
-                    case 3: return "Уборка и клининг";
-                    case 4: return "Обслуживание помещений";
-                    case 5: return "Доступ и пропуски";
-                    case 6: return "Сбой программного обеспечения";
-                    case 7: return "Ошибка в работе ПК";
-                    case 8: return "Сетевое оборудование";
-                    case 9: return "Техническая поддержка";
-                    case 10: return "Доступ, учётные записи и информационная безопасность";
-                    case 11: return "Периферийное оборудование и печать";
-                    case 12: return "Прочее";
+                    case 1: return "Офисная мебель и крепления";
+                    case 2: return "Освещение и электрика";
+                    case 3: return "Климат-контроль (кондиционеры, отопление)";
+                    case 4: return "Уборка помещений и вывоз мусора";
+                    case 5: return "Пропуска и система контроля доступа (СКУД)";
+                    case 6: return "Ремонт помещений";
+                    case 7: return "Расходные материалы (бумага, канцтовары)";
+                    case 8: return "Компьютеры и ноутбуки";
+                    case 9: return "Мониторы и дисплеи";
+                    case 10: return "Операционные системы (Windows, Linux)";
+                    case 11: return "Офисные приложения (MS Office, LibreOffice)";
+                    case 12: return "Корпоративные системы (1С, CRM, ERP)";
+                    case 13: return "Антивирусное ПО и безопасность";
+                    case 14: return "Принтеры, МФУ, сканеры";
+                    case 15: return "Сетевое оборудование (роутеры, коммутаторы)";
+                    case 16: return "Проводная сеть (LAN, Ethernet)";
+                    case 17: return "Беспроводная сеть (Wi-Fi)";
+                    case 18: return "Серверное оборудование";
+                    case 19: return "Расходные материалы (картриджи, бумага)";
+                    case 20: return "Другое";
                     default: return "—";
                 }
             }
@@ -266,24 +270,32 @@ namespace IT_HelpDesk.Data.Classes
             {
                 switch (categoryID)
                 {
-                    case 1: return "Premises repair";
-                    case 2: return "Technical maintenance";
-                    case 3: return "Cleaning";
-                    case 4: return "Premises maintenance";
-                    case 5: return "Access and passes";
-                    case 6: return "Software failure";
-                    case 7: return "PC malfunction";
-                    case 8: return "Network equipment";
-                    case 9: return "Technical support";
-                    case 10: return "Access, accounts and information security";
-                    case 11: return "Peripherals and printing";
-                    case 12: return "Other";
+                    case 1: return "Office furniture & fittings";
+                    case 2: return "Lighting & electrical";
+                    case 3: return "Climate control (AC, heating)";
+                    case 4: return "Cleaning & waste disposal";
+                    case 5: return "Passes & access control (ACS)";
+                    case 6: return "Premises repair";
+                    case 7: return "Consumables (paper, stationery)";
+                    case 8: return "Computers & laptops";
+                    case 9: return "Monitors & displays";
+                    case 10: return "Operating systems (Windows, Linux)";
+                    case 11: return "Office applications (MS Office, LibreOffice)";
+                    case 12: return "Corporate systems (1C, CRM, ERP)";
+                    case 13: return "Antivirus software & security";
+                    case 14: return "Printers, MFPs, scanners";
+                    case 15: return "Network equipment (routers, switches)";
+                    case 16: return "Wired network (LAN, Ethernet)";
+                    case 17: return "Wireless network (Wi-Fi)";
+                    case 18: return "Server equipment";
+                    case 19: return "Consumables (cartridges, paper)";
+                    case 20: return "Other";
                     default: return "—";
                 }
             }
         }
 
-        public string Transliterate(string russianText)
+            public string Transliterate(string russianText)
         {
             if (string.IsNullOrEmpty(russianText)) return russianText;
             string ru = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";

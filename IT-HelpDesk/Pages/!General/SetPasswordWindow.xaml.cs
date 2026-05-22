@@ -40,12 +40,21 @@ namespace IT_HelpDesk.Pages._General
             if (string.IsNullOrWhiteSpace(newPassword))
             {
                 MessageBox.Show(GetLoc("SetPassword_EmptyError"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                ConfirmPasswordBox.Password = string.Empty;
+                return;
+            }
+
+            if (!IsValidPassword(newPassword))
+            {
+                MessageBox.Show(GetLoc("Error_InvalidPassword"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
+                ConfirmPasswordBox.Password = string.Empty;
                 return;
             }
 
             if (newPassword != confirmPassword)
             {
                 MessageBox.Show(GetLoc("SetPassword_MismatchError"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                ConfirmPasswordBox.Password = string.Empty;
                 return;
             }
 
@@ -62,7 +71,6 @@ namespace IT_HelpDesk.Pages._General
             catch (Exception ex)
             {
                 MessageBox.Show(string.Format(GetLoc("SetPassword_SaveError"), ex.Message), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
-
             }
         }
 
@@ -79,6 +87,11 @@ namespace IT_HelpDesk.Pages._General
                 byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return Convert.ToBase64String(hashedBytes);
             }
+        }
+
+        private bool IsValidPassword(string password)
+        {
+            return !string.IsNullOrWhiteSpace(password) && password.Length >= 6;
         }
 
         private string GetLoc(string key)

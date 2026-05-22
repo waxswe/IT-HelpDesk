@@ -145,7 +145,7 @@ namespace IT_HelpDesk.Pages.Administrator
                 return;
             }
 
-            if (!string.IsNullOrEmpty(password) || !IsValidPassword(password))
+            if (!IsValidPassword(password))
             {
                 MessageBox.Show(GetLoc("Error_InvalidPassword"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 PBPassword.Focus();
