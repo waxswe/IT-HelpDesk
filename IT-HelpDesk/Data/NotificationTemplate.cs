@@ -21,8 +21,8 @@ namespace IT_HelpDesk.Data
         }
     
         public int templateID { get; set; }
-        public string template { get; set; }
         public string templateKey { get; set; }
+        public string template { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Notification> Notifications { get; set; }

@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Media;
 
 namespace IT_HelpDesk.Data.Classes
 {
@@ -295,24 +296,59 @@ namespace IT_HelpDesk.Data.Classes
             }
         }
 
-            public string Transliterate(string russianText)
+        public string Transliterate(string russianText)
         {
             if (string.IsNullOrEmpty(russianText)) return russianText;
+
+            if(CurrentLanguage == "ru") return russianText;
+
             string ru = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
             string[] en = new[] { "a", "b", "v", "g", "d", "e", "yo", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "kh", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya" };
+
+            // Разделители: пробел, точка, запятая, точка с запятой, двоеточие, восклицательный знак, вопросительный знак, скобки, тире и т.д.
+            char[] separators = { ' ', '.', ',', ';', ':', '!', '?', '(', ')', '-', '"', '\'' };
+
+            string[] words = russianText.Split(separators, StringSplitOptions.None);
             StringBuilder result = new StringBuilder();
-            foreach (char c in russianText.ToLower())
+            int lastIndex = 0;
+
+            foreach (string word in words)
             {
-                int index = ru.IndexOf(c);
-                if (index >= 0)
-                    result.Append(en[index]);
-                else
-                    result.Append(c);
+                // Находим разделитель после слова в оригинальной строке
+                int wordStart = russianText.IndexOf(word, lastIndex);
+                if (wordStart > lastIndex)
+                {
+                    // Добавляем разделители, которые были перед словом
+                    result.Append(russianText.Substring(lastIndex, wordStart - lastIndex));
+                }
+
+                string lowerWord = word.ToLower();
+                StringBuilder translitWord = new StringBuilder();
+                foreach (char c in lowerWord)
+                {
+                    int index = ru.IndexOf(c);
+                    if (index >= 0)
+                        translitWord.Append(en[index]);
+                    else
+                        translitWord.Append(c);
+                }
+
+                if (translitWord.Length > 0)
+                {
+                    // Делаем первую букву заглавной
+                    char firstChar = char.ToUpper(translitWord[0]);
+                    string rest = translitWord.ToString().Substring(1);
+                    result.Append(firstChar).Append(rest);
+                }
+
+                lastIndex = wordStart + word.Length;
             }
-            if (result.Length > 0)
-                result[0] = char.ToUpper(result[0]);
+
+            // Добавляем хвостовые разделители, если есть
+            if (lastIndex < russianText.Length)
+                result.Append(russianText.Substring(lastIndex));
+
             return result.ToString();
         }
-
     }
 }

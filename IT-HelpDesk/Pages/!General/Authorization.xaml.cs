@@ -26,6 +26,7 @@ namespace IT_HelpDesk.Pages._General
     /// </summary>
     public partial class Authorization : Page
     {
+        LocalizationManager loc = (LocalizationManager)Application.Current.Resources["LocalizationManager"];
         public Authorization()
         {
             InitializeComponent();
@@ -91,22 +92,22 @@ namespace IT_HelpDesk.Pages._General
                 return;
             }
 
-            if (user.isNew)
-            {
-                SetPasswordWindow setPassWindow = new SetPasswordWindow(user);
-                setPassWindow.ShowDialog();
-
-                if (!setPassWindow.PasswordSetSuccessfully)
-                {
-                    return;
-                }
-            }
-
             string hashedInputPassword = AuthService.ComputeSha256Hash(PBPassword.Password);
             if (user.password == hashedInputPassword)
             {
                 user.mistakeCount = 0;
                 ConnectObject.GetConnect().SaveChanges();
+
+                if (user.isNew == true)
+                {
+                    SetPasswordWindow setPassWindow = new SetPasswordWindow(user);
+                    setPassWindow.ShowDialog();
+
+                    if (!setPassWindow.PasswordSetSuccessfully)
+                    {
+                        return;
+                    }
+                }
 
                 if (RememberMeCheckBox.IsChecked == true)
                 {
@@ -131,22 +132,22 @@ namespace IT_HelpDesk.Pages._General
                 switch (user.roleID)
                 {
                     case 1:
-                        welcomeMessage = string.Format(GetLoc("Welcome_Admin"), user.name);
+                        welcomeMessage = string.Format(GetLoc("Welcome_Admin"), loc.Transliterate(user.name));
                         MessageBox.Show(welcomeMessage, GetLoc("Welcome_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
                         FrameObject.frameMain.Navigate(new AdministratorPage());
                         break;
                     case 2:
-                        welcomeMessage = string.Format(GetLoc("Welcome_User"), user.name);
+                        welcomeMessage = string.Format(GetLoc("Welcome_User"), loc.Transliterate(user.name));
                         MessageBox.Show(welcomeMessage, GetLoc("Welcome_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
                         FrameObject.frameMain.Navigate(new ClientPage());
                         break;
                     case 3:
-                        welcomeMessage = string.Format(GetLoc("Welcome_Manager"), user.name);
+                        welcomeMessage = string.Format(GetLoc("Welcome_Manager"), loc.Transliterate(user.name));
                         MessageBox.Show(welcomeMessage, GetLoc("Welcome_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
                         FrameObject.frameMain.Navigate(new Manager.ManagerPage());
                         break;
                     case 4:
-                        welcomeMessage = string.Format(GetLoc("Welcome_Executor"), user.name);
+                        welcomeMessage = string.Format(GetLoc("Welcome_Executor"), loc.Transliterate(user.name));
                         MessageBox.Show(welcomeMessage, GetLoc("Welcome_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
                         FrameObject.frameMain.Navigate(new Executor.ExecutorPage());
                         break;
@@ -260,13 +261,11 @@ namespace IT_HelpDesk.Pages._General
 
         private void SetRussian_Click(object sender, RoutedEventArgs e)
         {
-            LocalizationManager loc = (LocalizationManager)Application.Current.Resources["LocalizationManager"];
             loc.ChangeLanguage("ru");
         }
 
         private void SetEnglish_Click(object sender, RoutedEventArgs e)
         {
-            LocalizationManager loc = (LocalizationManager)Application.Current.Resources["LocalizationManager"];
             loc.ChangeLanguage("en");
         }
 
@@ -285,7 +284,6 @@ namespace IT_HelpDesk.Pages._General
 
         private string GetLoc(string key)
         {
-            LocalizationManager loc = Application.Current.Resources["LocalizationManager"] as LocalizationManager;
             return loc?[key] ?? key;
         }
 

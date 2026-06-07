@@ -19,7 +19,8 @@
         <Rectangle Fill="Blue" HorizontalAlignment="Left" Height="72" Margin ="55,0,0,20"  Stroke="Black"
             VerticalAlignment="Center" Width="72"/>
         <Image Source="/Data/Images/it.png" Grid.Row="0" HorizontalAlignment="Left"  Height="70" Width="70" Margin="56,13,0,34" MouseLeftButtonDown="OpenWebsite_Click" Cursor="Hand"/>
-        <Label Content="IT-HelpDesk" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Width="300" Height="50" FontFamily="Sitka Banner" FontSize="40" FontWeight="Bold" Foreground="AliceBlue"/>
+        <Label Content="IT-HelpDesk" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Width="300" Height="50" FontFamily="Sitka Banner" FontSize="40" FontWeight="Bold" 
+               Foreground="AliceBlue"/>
         <controls:HeaderUserControl x:Name="HeaderUserControl" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0" Visibility="Collapsed"/>
 
 
@@ -29,9 +30,13 @@
 
         <!-- footer -->
         <Rectangle Fill="#2651a8" HorizontalAlignment="Left" Height="80" VerticalAlignment="Bottom" Width="1280" Grid.Row="2" Stroke="Black"/>
-        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_Copyright]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" Height="28" VerticalAlignment="Top" Width="300" HorizontalContentAlignment="Center"/>
-        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_OgrnInn]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" Height="25" VerticalAlignment="Top" Margin="0,17,0,0" Width="300" HorizontalContentAlignment="Center"/>
-        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_Phone]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" Height="25" VerticalAlignment="Top" Margin="0,34,0,0" Width="200" HorizontalContentAlignment="Center"/>
-        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_Email]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" Height="25" VerticalAlignment="Top" Margin="0,51,0,0" Width="210" HorizontalContentAlignment="Center"/>
+        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_Copyright]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" 
+               Height="28" VerticalAlignment="Top" Width="300" HorizontalContentAlignment="Center"/>
+        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_OgrnInn]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" 
+               Height="25" VerticalAlignment="Top" Margin="0,17,0,0" Width="300" HorizontalContentAlignment="Center"/>
+        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_Phone]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" 
+               Height="25" VerticalAlignment="Top" Margin="0,34,0,0" Width="200" HorizontalContentAlignment="Center"/>
+        <Label Content="{Binding Source={StaticResource LocalizationManager}, Path=[Footer_Email]}" Foreground="White" Grid.Row="2" FontSize="14" FontFamily="Times New Roman" HorizontalAlignment="Center" 
+               Height="25" VerticalAlignment="Top" Margin="0,51,0,0" Width="210" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>

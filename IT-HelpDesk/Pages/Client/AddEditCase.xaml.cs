@@ -142,12 +142,6 @@ namespace IT_HelpDesk.Pages.Client
                 TBTitle.Focus();
                 return;
             }
-            if (string.IsNullOrWhiteSpace(TBDescriprion.Text))
-            {
-                MessageBox.Show(GetLoc("Enter_Description_Error"), GetLoc("Error_EmptyTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
-                TBDescriprion.Focus();
-                return;
-            }
 
             if (TBTitle.Text.Length > maxTitleLength)
             {
@@ -156,9 +150,12 @@ namespace IT_HelpDesk.Pages.Client
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(TBDescriprion.Text)) _currentCase.description = "Описание отсутствует";
+
             _currentCase.updatedBy = AuthService.CurrentUser.userID;
             _currentCase.requestCategoryID = (int)CBCategory.SelectedValue;
 
+            // Если новая заявка
             if (_currentCase.requestID == 0)
             {
                 _currentCase.clientID = AuthService.CurrentUser.userID;

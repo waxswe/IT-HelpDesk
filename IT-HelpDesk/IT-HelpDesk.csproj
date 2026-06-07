@@ -174,9 +174,6 @@
     <Compile Include="Data\Status.cs">
       <DependentUpon>HelpDeskDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Data\sysdiagram.cs">
-      <DependentUpon>HelpDeskDB.tt</DependentUpon>
-    </Compile>
     <Compile Include="Data\User.cs">
       <DependentUpon>HelpDeskDB.tt</DependentUpon>
     </Compile>
@@ -360,18 +357,7 @@
     <Resource Include="Data\Images\header.png" />
     <Resource Include="Data\Images\it.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Images\UserAvatars\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Data\Images\avatar.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Data\Images\send.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Data\HelpDeskDB.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -383,6 +369,15 @@
       <DependentUpon>HelpDeskDB.edmx</DependentUpon>
       <LastGenOutput>HelpDeskDB.cs</LastGenOutput>
     </Content>
+    <Content Include="Data\Images\avatar.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Data\Images\send.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Data\Images\filter.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

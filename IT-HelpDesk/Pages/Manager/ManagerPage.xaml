@@ -49,8 +49,6 @@
                       HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
                             <MenuItem x:Name="FilterStatusCompleted" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Completed]}" Click="FilterOption_Click"
                       HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-                            <MenuItem x:Name="FilterStatusCancelled" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Cancelled]}" Click="FilterOption_Click"
-                      HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
                             <MenuItem x:Name="FilterStatusClosed" Header="{Binding Source={StaticResource LocalizationManager}, Path=[Filter_Status_Closed]}" Click="FilterOption_Click"
                       HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
 

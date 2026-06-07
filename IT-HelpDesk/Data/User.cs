@@ -35,10 +35,10 @@ namespace IT_HelpDesk.Data
         public Nullable<int> professionID { get; set; }
         public Nullable<System.DateTime> createdAt { get; set; }
         public string email { get; set; }
+        public string phone { get; set; }
         public Nullable<int> mistakeCount { get; set; }
         public string plainPassword { get; set; }
-        public string phone { get; set; }
-        public bool isNew { get; set; }
+        public Nullable<bool> isNew { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Comment> Comments { get; set; }

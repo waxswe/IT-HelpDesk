@@ -36,8 +36,8 @@ CREATE TABLE Users (
 	email NVARCHAR(64),
 	phone NVARCHAR(16),
 	mistakeCount INT CHECK (mistakeCount >= 0) DEFAULT 0,
-	plainPassword NVARCHAR(255),
-	isNew BIT DEFAULT 0
+	plainPassword NVARCHAR(16),
+	isNew BIT DEFAULT 1
 );
 
 -- Справочник разделов заявок
@@ -53,7 +53,7 @@ CREATE TABLE RequestCategories (
     requestCategory NVARCHAR(128) NOT NULL UNIQUE
 );
 
--- Справочник статусов обращений
+-- Справочник статусов заявок
 CREATE TABLE RequestStatuses (
     requestStatusID INT IDENTITY(1,1) PRIMARY KEY,
     requestStatus NVARCHAR(50) NOT NULL UNIQUE
@@ -135,7 +135,7 @@ INSERT INTO Statuses (status) VALUES
 -- Справочник профессий
 INSERT INTO Professions (profession) VALUES
     ('Специалист АХО'),
-	('Электромонтёр / Энергетик'),
+	('Электротехник'),
 	('Менеджер по закупкам и снабжению'),
 	('Системный администратор'),
 	('Инженер технической поддержки'),
@@ -158,7 +158,7 @@ INSERT INTO RequestCategories (requestSectionID, requestCategory) VALUES
 	(1, 'Освещение и электрика'),
 	(1, 'Климат-контроль (кондиционеры, отопление)'),
 	(1, 'Уборка помещений и вывоз мусора'),
-	(1, 'Пропуска и система контроля доступа (СКУД)'),
+	(1, 'Пропуска и система контроля доступа'),
 	(1, 'Ремонт помещений'),
 	(1, 'Расходные материалы (бумага, канцтовары)'),
 
@@ -192,7 +192,7 @@ INSERT INTO NotificationStatuses (notificationStatus) VALUES
 	('Новое'), 
 	('Прочитано');
 
--- Шаблоны уведомлений (templateKey, template на русском)
+-- Шаблоны уведомлений
 INSERT INTO NotificationTemplates (templateKey, template) VALUES
 	('Notification_NewRequest_ToManager', 'Создана новая заявка #{0}'),
 	('Notification_Assigned_ToExecutor', 'Вам назначена заявка #{0}'),

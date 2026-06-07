@@ -21,8 +21,8 @@ namespace IT_HelpDesk.Data
         public Nullable<int> initiatorID { get; set; }
         public Nullable<int> requestID { get; set; }
         public Nullable<System.DateTime> createdAt { get; set; }
-        public bool isRead { get; set; }
         public string message { get; set; }
+        public bool isRead { get; set; }
     
         public virtual User User { get; set; }
         public virtual NotificationStatus NotificationStatus { get; set; }

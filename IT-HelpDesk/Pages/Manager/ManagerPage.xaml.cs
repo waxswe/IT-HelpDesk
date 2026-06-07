@@ -184,7 +184,6 @@ namespace IT_HelpDesk.Pages.Manager
             FilterStatusWork.IsChecked = false;
             FilterStatusWaiting.IsChecked = false;
             FilterStatusCompleted.IsChecked = false;
-            FilterStatusCancelled.IsChecked = false;
             FilterStatusClosed.IsChecked = false;
             // Сброс разделов
             _selectedSectionIds.Clear();
@@ -285,11 +284,11 @@ namespace IT_HelpDesk.Pages.Manager
 
             if (sectionId == 1) // Административно-хозяйственный
             {
-                allowedProfessions = new List<int> { 1, 2, 3, 4 }; 
+                allowedProfessions = new List<int> { 1, 2, 3 }; 
             }
             else if (sectionId == 2) // Компьютерная техника и ПО
             {
-                allowedProfessions = new List<int> { 5, 6, 7, 8 }; 
+                allowedProfessions = new List<int> { 4, 5, 6, 7 }; 
             }
 
             if (allowedProfessions != null)
@@ -483,7 +482,6 @@ namespace IT_HelpDesk.Pages.Manager
             else if (mi.Name == "FilterStatusWork") UpdateStatusFilter(3, mi.IsChecked);
             else if (mi.Name == "FilterStatusWaiting") UpdateStatusFilter(4, mi.IsChecked);
             else if (mi.Name == "FilterStatusCompleted") UpdateStatusFilter(5, mi.IsChecked);
-            else if (mi.Name == "FilterStatusCancelled") UpdateStatusFilter(6, mi.IsChecked);
             else if (mi.Name == "FilterStatusClosed") UpdateStatusFilter(7, mi.IsChecked);
             // Разделы
             else if (mi.Name == "FilterSectionFacility") UpdateSectionFilter(1, mi.IsChecked);
