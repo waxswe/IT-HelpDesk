@@ -25,7 +25,7 @@
 3. ПКМ по `Data` → Add → New Item → ADO.NET Entity Data Model → имя `ITHelpDeskEntities` → Add.
 4. Выберите `Конструктор EF из базы данных` → Next.
 5. New Connection → укажите имя сервера (например, `DESKTOP-ABC123\SQLEXPRESS`) → выберите аутентификацию.
-6. Поставьте галочку `Trust Server Certificate`.
+6. Поставьте галочку `Доверять сертификату сервера`.
 7. Выберите базу `ITHelpDesk` → OK → Next.
 8. Оставьте имя `ITHelpDeskEntities` → Next.
 9. Выберите все таблицы.
